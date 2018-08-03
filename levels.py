@@ -15,3 +15,15 @@ level = [
 "W  W  W        W   W",
 "WWWWWWWWWWWWWWWWWWWW",
 ]
+
+level1 = [
+"WWWWWWWWWWWWWWWWWWWW",
+"W      W    W      W",
+"W      W    W      W",
+"W WW   WW  WW   WW W",
+"W W              W W",
+"W W  W        W  W W",
+"W WW W WWWWWW W WW W",
+"W                  W",
+"WWWWWWWWWWWWWWWWWWWW",
+]
