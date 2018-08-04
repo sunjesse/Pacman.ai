@@ -29,7 +29,7 @@ for row in level:
     y += 60
     x = 60
 
-tiles = coins #get coordinates of tiles || WILL BE USED LATER ON FOR PATH FINDING ALGOS VERY IMPORTANT
+tiles = coins #get coordinates of tiles || WILL BE USED LATER ON FOR PATH FINDING ALGOS VERY IMPORTANT || FIX THIS, CHANGING DYNAMICALLY???
 
 def drawWalls():
     for wall in walls:

@@ -17,6 +17,9 @@ import levels
 import generateLevel
 
 pygame.init()
+pygame.font.init()
+
+font = pygame.font.SysFont('arial', 100)
 
 black = constants.black
 
@@ -91,11 +94,15 @@ while not crashed:
 
     generateLevel.drawWalls()
     generateLevel.drawCoins()
+
+    label = font.render("Score: " + str(constants.score), 1, (255, 255, 255))
+    constants.screen.blit(label, (constants.display_width * 0.02, constants.display_height * 0.9))
+
+
     for wall in walls: #DEBUGGING CODE
         if pacmanMain.rect.colliderect(wall.rect):
             print(True)
 
-    print(pacmanMain.rect)
     #pacmanGroup.update()
     pacmanMain.checkCollision()
     pacmanMain.update()

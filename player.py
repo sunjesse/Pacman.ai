@@ -89,3 +89,4 @@ class Pacman(pygame.sprite.Sprite):
                 index = coins.index(coin)
                 coins.remove(coin)
                 coinPos.pop(index)
+                constants.score += 1

@@ -1,3 +1,8 @@
+'''
+O = empty tile, usually used for spawn point of ghosts.
+W = wall
+'''
+
 level = [
 "WWWWWWWWWWWWWWWWWWWW",
 "W                  W",
@@ -18,9 +23,9 @@ level = [
 
 level1 = [
 "WWWWWWWWWWWWWWWWWWWW",
-"W      W    W      W",
-"W      W    W      W",
-"W WW   WW  WW   WW W",
+"W      WOOOOW      W",
+"W      WOOOOW      W",
+"W WW   WWOOWW   WW W",
 "W W              W W",
 "W W  W        W  W W",
 "W WW W WWWWWW W WW W",
