@@ -14,17 +14,17 @@ walls = generateLevel.walls
 class Pacman(pygame.sprite.Sprite):
     def __init__(self):
         super(Pacman, self).__init__()
-        #self.frames = []
-        #self.frames.append(pygame.transform.scale(pygame.image.load("agent1.png"), (int(display_width*0.03), int(display_height*0.0525))))
-        #self.frames.append(pygame.transform.scale(pygame.image.load("agent1frame2.png"), (int(display_width*0.03), int(display_height*0.0525))))
+        self.frames = []
+        self.frames.append(pygame.transform.scale(pygame.image.load("agent1.png"), (int(display_width*0.03), int(display_height*0.0525))))
+        self.frames.append(pygame.transform.scale(pygame.image.load("agent1frame2.png"), (int(display_width*0.03), int(display_height*0.0525))))
 
         self.x = display_width * 0.49
         self.y = display_height * 0.446
 
         self.index = 0
         self.counter = 0
-        #self.image = self.frames[self.index]
-        self.image = pygame.image.load("agent1.png")
+        self.image = self.frames[self.index]
+        #self.image = pygame.image.load("agent1.png")
         self.image = pygame.transform.scale(self.image,(int(display_width*0.03), int(display_height*0.0525)))
         self.rect = self.image.get_rect()
         self.rect = self.rect.move((self.x,self.y))
@@ -50,8 +50,7 @@ class Pacman(pygame.sprite.Sprite):
         elif self.counter % 15 == 0:
             self.index = 0
 
-        #self.image = self.frames[self.index]
-        #self.rect = self.rect.move((self.x,self.y))
+        self.image = self.frames[self.index]
 
         #Direction Vertical Flip
         if self.face_left == True:
@@ -61,7 +60,21 @@ class Pacman(pygame.sprite.Sprite):
 
         #Wall Collisions
 
-    #    for wall in walls:
-    #        if self.rect.colliderect(wall.rect):
-                #if self.move_right == True:
-                    #self.rect.right = wall.rect.left
+        for wall in walls:
+            if self.rect.colliderect(wall.rect):
+
+                if self.move_up == True:
+                    self.rect.top = wall.rect.bottom
+                    self.y = wall.rect.bottom
+
+                if self.move_down == True:
+                    self.rect.bottom = wall.rect.top
+                    self.y = wall.rect.top - constants.display_height*0.0525
+
+                if self.move_right == True:
+                    self.rect.right = wall.rect.left
+                    self.x = wall.rect.left - constants.display_width * 0.03
+
+                if self.move_left == True:
+                    self.rect.left = wall.rect.right
+                    self.x = wall.rect.right

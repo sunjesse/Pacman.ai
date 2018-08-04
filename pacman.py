@@ -2,6 +2,10 @@
 pacman.py
 
 Main File
+
+SATURDAY TO DO:
+1. Find better method of detect wall collision, for loop is not efficient and fast.
+
 '''
 
 import pygame
@@ -30,7 +34,7 @@ walls = generateLevel.walls
 
 #toggle = pygame.Rect(100, 100, 50, 50)
 #toggleOn = False
-i = 0
+
 while not crashed:
 
     for event in pygame.event.get():
@@ -82,33 +86,16 @@ while not crashed:
         pacmanMain.move_down = True
         pacmanMain.move_right = False
         pacmanMain.move_left = False
-    #print(str(pacmanMain.x) + " " + str(pacmanMain.y))
 
     constants.screen.fill(black)
 
-    #print(pacmanMain.rect)
+    generateLevel.drawWalls()
 
-    for wall in walls:
-        pygame.draw.rect(constants.screen, (12, 0, 255), wall.rect)
+    for wall in walls: #DEBUGGING CODE
         if pacmanMain.rect.colliderect(wall.rect):
-            print(str(i) + " " + str(True))
-            i += 1
+            print(True)
 
-            if pacmanMain.move_up == True:
-                pacmanMain.rect.top = wall.rect.bottom
-                pacmanMain.y = wall.rect.bottom
-
-            if pacmanMain.move_down == True:
-                pacmanMain.rect.bottom = wall.rect.top
-                pacmanMain.y = wall.rect.top - constants.display_height*0.0525
-
-            if pacmanMain.move_right == True:
-                pacmanMain.rect.right = wall.rect.left
-                pacmanMain.x = wall.rect.left - constants.display_width * 0.03
-
-            if pacmanMain.move_left == True:
-                pacmanMain.rect.left = wall.rect.right
-                pacmanMain.x = wall.rect.right
+    print(pacmanMain.rect)
     #pacmanGroup.update()
     pacmanMain.update()
     #pacmanMain.draw(constants.screen)
