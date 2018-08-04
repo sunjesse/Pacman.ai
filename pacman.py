@@ -87,17 +87,17 @@ while not crashed:
         pacmanMain.move_right = False
         pacmanMain.move_left = False
 
-    pacmanMain.checkWallCollision()
     constants.screen.fill(black)
 
     generateLevel.drawWalls()
-
+    generateLevel.drawCoins()
     for wall in walls: #DEBUGGING CODE
         if pacmanMain.rect.colliderect(wall.rect):
             print(True)
 
     print(pacmanMain.rect)
     #pacmanGroup.update()
+    pacmanMain.checkCollision()
     pacmanMain.update()
     #pacmanMain.draw(constants.screen)
     #pacmanGroup.draw(constants.screen)

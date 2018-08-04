@@ -10,16 +10,18 @@ import generateLevel
 display_width = constants.display_width
 display_height = constants.display_height
 walls = generateLevel.walls
+coins = generateLevel.coinsObjects
+coinPos = generateLevel.coins
 
 class Pacman(pygame.sprite.Sprite):
     def __init__(self):
         super(Pacman, self).__init__()
         self.frames = []
-        self.frames.append(pygame.transform.scale(pygame.image.load("agent1x.png"), (int(display_width*0.028), int(display_height*0.05))))
-        self.frames.append(pygame.transform.scale(pygame.image.load("agent1frame2x.png"), (int(display_width*0.028), int(display_height*0.05))))
+        self.frames.append(pygame.transform.scale(pygame.image.load("agent1x.png"), (int(display_width*0.0224), int(display_height*0.04))))
+        self.frames.append(pygame.transform.scale(pygame.image.load("agent1frame2x.png"), (int(display_width*0.0224), int(display_height*0.04))))
 
         self.x = display_width * 0.49
-        self.y = display_height * 0.446
+        self.y = display_height * 0.45
 
         self.index = 0
         self.counter = 0
@@ -53,13 +55,17 @@ class Pacman(pygame.sprite.Sprite):
         self.image = self.frames[self.index]
 
         #Direction Vertical Flip
-        if self.face_left == True:
+        if self.move_left == True:
             constants.screen.blit(pygame.transform.flip(self.image, True, False), (self.x, self.y))
-        else:
+        elif self.move_right == True:
             constants.screen.blit(self.image, (self.x, self.y))
+        elif self.move_up == True:
+            constants.screen.blit(pygame.transform.rotate(self.image, 90), (self.x, self.y))
+        elif self.move_down == True:
+            constants.screen.blit(pygame.transform.rotate(self.image, -90), (self.x, self.y))
 
         #Wall Collisions
-    def checkWallCollision(self):
+    def checkCollision(self):
         for wall in walls:
             if self.rect.colliderect(wall.rect):
 
@@ -69,12 +75,17 @@ class Pacman(pygame.sprite.Sprite):
 
                 if self.move_down == True:
                     self.rect.bottom = wall.rect.top
-                    self.y = wall.rect.top - constants.display_height*0.0525
+                    self.y = wall.rect.top - constants.display_height*0.04
 
                 if self.move_right == True:
                     self.rect.right = wall.rect.left
-                    self.x = wall.rect.left - constants.display_width * 0.03
+                    self.x = wall.rect.left - constants.display_width * 0.0224
 
                 if self.move_left == True:
                     self.rect.left = wall.rect.right
                     self.x = wall.rect.right
+        for coin in coins:
+            if self.rect.colliderect(coin):
+                index = coins.index(coin)
+                coins.remove(coin)
+                coinPos.pop(index)
