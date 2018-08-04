@@ -15,8 +15,8 @@ class Pacman(pygame.sprite.Sprite):
     def __init__(self):
         super(Pacman, self).__init__()
         self.frames = []
-        self.frames.append(pygame.transform.scale(pygame.image.load("agent1.png"), (int(display_width*0.03), int(display_height*0.0525))))
-        self.frames.append(pygame.transform.scale(pygame.image.load("agent1frame2.png"), (int(display_width*0.03), int(display_height*0.0525))))
+        self.frames.append(pygame.transform.scale(pygame.image.load("agent1x.png"), (int(display_width*0.028), int(display_height*0.05))))
+        self.frames.append(pygame.transform.scale(pygame.image.load("agent1frame2x.png"), (int(display_width*0.028), int(display_height*0.05))))
 
         self.x = display_width * 0.49
         self.y = display_height * 0.446
@@ -25,7 +25,7 @@ class Pacman(pygame.sprite.Sprite):
         self.counter = 0
         self.image = self.frames[self.index]
         #self.image = pygame.image.load("agent1.png")
-        self.image = pygame.transform.scale(self.image,(int(display_width*0.03), int(display_height*0.0525)))
+        #self.image = pygame.transform.scale(self.image,(int(display_width*0.03), int(display_height*0.0525)))
         self.rect = self.image.get_rect()
         self.rect = self.rect.move((self.x,self.y))
 
@@ -59,7 +59,7 @@ class Pacman(pygame.sprite.Sprite):
             constants.screen.blit(self.image, (self.x, self.y))
 
         #Wall Collisions
-
+    def checkWallCollision(self):
         for wall in walls:
             if self.rect.colliderect(wall.rect):
 

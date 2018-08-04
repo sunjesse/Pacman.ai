@@ -87,6 +87,7 @@ while not crashed:
         pacmanMain.move_right = False
         pacmanMain.move_left = False
 
+    pacmanMain.checkWallCollision()
     constants.screen.fill(black)
 
     generateLevel.drawWalls()
