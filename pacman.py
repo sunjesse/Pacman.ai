@@ -11,6 +11,7 @@ SATURDAY TO DO:
 import pygame
 import sys
 from player import Pacman
+from ghost import Ghost
 import constants
 from wall import Wall
 import levels
@@ -32,6 +33,8 @@ crashed = False
 
 pacmanMain = Pacman()
 #pacmanGroup = pygame.sprite.Group(pacmanMain)
+
+blinky = Ghost()
 
 walls = generateLevel.walls
 
@@ -57,11 +60,12 @@ while not crashed:
         if pacmanMain.rect.colliderect(wall.rect):
             print(crashCount)
             crashCount += 1
-    #pacmanGroup.update()
+
+    print(pacmanMain.rect)
+
     pacmanMain.checkCollision()
+    blinky.update()
     pacmanMain.update()
-    #pacmanMain.draw(constants.screen)
-    #pacmanGroup.draw(constants.screen)
     pygame.display.update()
     clock.tick(60)
 
