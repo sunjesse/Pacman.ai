@@ -40,6 +40,8 @@ class Pacman(pygame.sprite.Sprite):
         self.face_right = True
 
     def update(self):
+
+        self.moveAgent()
         #Animation
         if self.counter == 0:
             self.index += 1
@@ -64,7 +66,55 @@ class Pacman(pygame.sprite.Sprite):
         elif self.move_down == True:
             constants.screen.blit(pygame.transform.rotate(self.image, -90), (self.x, self.y))
 
-        #Wall Collisions
+        ''' ----DEBUGGING LINE---- DISPLAYS THE RECT.X and RECT.Y VALUES'''
+        #pygame.draw.circle(constants.screen, (255, 0, 0), (self.rect.x, self.rect.y), 4)
+
+
+    def moveAgent(self):
+        keys = pygame.key.get_pressed() #TEMPORARY || WILL MAKE IT TOGGLE WHEN QLEARNING GETS IMPLEMENTED
+        if keys[pygame.K_LEFT]:
+            self.x -= 0.006*constants.display_height
+            self.rect.x = self.x
+            self.move_left = True
+            self.move_right = False
+            self.move_up = False
+            self.move_down = False
+
+            self.face_left = True
+            self.face_right = False
+            self.rect = self.rect.move(-0.006*constants.display_height, 0)
+
+        elif keys[pygame.K_RIGHT]:
+            self.x += 0.006*constants.display_height
+            self.rect.x = self.x
+            self.move_left = False
+            self.move_right = True
+            self.move_up = False
+            self.move_down = False
+
+            self.face_right = True
+            self.face_left = False
+            self.rect = self.rect.move(0.006*constants.display_height, 0)
+
+        elif keys[pygame.K_UP]:
+            self.y -= 0.006*constants.display_height
+            self.rect.y = self.y
+            self.rect = self.rect.move(0, -0.006*constants.display_height)
+            self.move_up = True
+            self.move_down = False
+            self.move_right = False
+            self.move_left = False
+
+        elif keys[pygame.K_DOWN]:
+            self.y += 0.006*constants.display_height
+            self.rect.y = self.y
+            self.rect = self.rect.move(0, 0.006*constants.display_height)
+            self.move_up = False
+            self.move_down = True
+            self.move_right = False
+            self.move_left = False
+
+    #Wall collisions
     def checkCollision(self):
         for wall in walls:
             if self.rect.colliderect(wall.rect):
@@ -75,7 +125,7 @@ class Pacman(pygame.sprite.Sprite):
 
                 if self.move_down == True:
                     self.rect.bottom = wall.rect.top
-                    self.y = wall.rect.top - constants.display_height*0.04
+                    self.y = wall.rect.top - constants.display_height * 0.04
 
                 if self.move_right == True:
                     self.rect.right = wall.rect.left
