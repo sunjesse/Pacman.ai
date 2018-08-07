@@ -134,6 +134,7 @@ class Pacman(pygame.sprite.Sprite):
                 if self.move_left == True:
                     self.rect.left = wall.rect.right
                     self.x = wall.rect.right
+
         for coin in coins:
             if self.rect.colliderect(coin):
                 index = coins.index(coin)

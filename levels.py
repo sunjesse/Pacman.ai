@@ -23,12 +23,12 @@ level = [
 
 level1 = [
 "WWWWWWWWWWWWWWWWWWWW",
-"W      WOOOOW      W",
-"W      WOOOOW      W",
-"W WW   WWOOWW   WW W",
-"W W              W W",
-"W W  W        W  W W",
+"W IIII WOOOOW IIII W",
+"WIIIIIIWOOOOWIIIIIIW",
+"W WWIIIWWOOWWIIIWW W",
+"W W IIIIIIIIIIII W W",
+"W W IWIIIIIIIIWI W W",
 "W WW W WWWWWW W WW W",
-"W                  W",
+"W   I I      I I   W",
 "WWWWWWWWWWWWWWWWWWWW",
 ]

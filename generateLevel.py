@@ -13,15 +13,17 @@ import constants
 walls = []
 coins = []
 coinsObjects = []
+intersection = []
 
 level = levels.level1
 x = 60
 y = 60
+
 for row in level:
     for col in row:
         if col == "W":
             walls.append(Wall((x, y)))
-        elif col == " ":
+        elif col == " " or col == "I":
             coins.append((x+30, y+30))
             coinsObjects.append(pygame.Rect(x+30, y+30, \
             16, 16))

@@ -16,6 +16,7 @@ import constants
 from wall import Wall
 import levels
 import generateLevel
+import dynamicPositions
 
 pygame.init()
 pygame.font.init()
@@ -61,9 +62,16 @@ while not crashed:
     #        print(crashCount)
     #        crashCount += 1
 
+
     pacmanMain.checkCollision()
+    blinky.checkCollision()
     blinky.update()
     pacmanMain.update()
+
+    print(blinky.counter)
+
+    #Update (x, y) position value of pacman in the global variables file dynamicPositions.py
+    dynamicPositions.pacman = (pacmanMain.x, pacmanMain.y)
     pygame.display.update()
     clock.tick(60)
 
