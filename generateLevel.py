@@ -31,7 +31,7 @@ for row in level:
             allTiles.append((x+30, y+30))
             if col =="I":
                 intersection.append(pygame.Rect(x+30, y+30, \
-                16, 16))
+                14, 14))
         x += 90
     y += 60
     x = 60

@@ -120,7 +120,7 @@ class Ghost(pygame.sprite.Sprite):
 
         pygame.draw.circle(constants.screen, (255, 0, 0), (self.rect.x, self.rect.y), 4)
 
-        
+
     def calculateDistance(self, x, y):
         return ((x - dynamicPositions.pacman[0])*(x - dynamicPositions.pacman[0]) + (y - dynamicPositions.pacman[1])*(y - dynamicPositions.pacman[1]))**(1/2)
 
