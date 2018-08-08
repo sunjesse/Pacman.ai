@@ -14,6 +14,7 @@ walls = []
 coins = []
 coinsObjects = []
 intersection = []
+allTiles = [] #contains center coordinates of all tiles on the level.
 
 level = levels.level1
 x = 60
@@ -27,11 +28,13 @@ for row in level:
             coins.append((x+30, y+30))
             coinsObjects.append(pygame.Rect(x+30, y+30, \
             16, 16))
+            allTiles.append((x+30, y+30))
+            if col =="I":
+                intersection.append(pygame.Rect(x+30, y+30, \
+                16, 16))
         x += 90
     y += 60
     x = 60
-
-tiles = coins #get coordinates of tiles || WILL BE USED LATER ON FOR PATH FINDING ALGOS VERY IMPORTANT || FIX THIS, CHANGING DYNAMICALLY???
 
 def drawWalls():
     for wall in walls:

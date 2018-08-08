@@ -20,8 +20,10 @@ class Pacman(pygame.sprite.Sprite):
         self.frames.append(pygame.transform.scale(pygame.image.load("agent1x.png"), (int(display_width*0.0224), int(display_height*0.04))))
         self.frames.append(pygame.transform.scale(pygame.image.load("agent1frame2x.png"), (int(display_width*0.0224), int(display_height*0.04))))
 
-        self.x = display_width * 0.49
-        self.y = display_height * 0.45
+        #self.x = display_width * 0.49
+        #self.y = display_height * 0.45
+        self.x = 1000
+        self.y = 300
 
         self.index = 0
         self.counter = 0

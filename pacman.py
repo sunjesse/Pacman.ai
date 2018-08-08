@@ -61,14 +61,19 @@ while not crashed:
     #    if pacmanMain.rect.colliderect(wall.rect):
     #        print(crashCount)
     #        crashCount += 1
-
+    #for i in generateLevel.intersection:
+    #    if blinky.rect.colliderect(i):
+    #        print(i)
 
     pacmanMain.checkCollision()
     blinky.checkCollision()
-    blinky.update()
     pacmanMain.update()
-
-    print(blinky.counter)
+    dynamicPositions.pacman = (pacmanMain.x, pacmanMain.y)
+    blinky.update()
+    print(blinky.shortest_distance)
+    print(blinky.willMove)
+    blinky.shortest_distance = []
+    blinky.tileToMove = []
 
     #Update (x, y) position value of pacman in the global variables file dynamicPositions.py
     dynamicPositions.pacman = (pacmanMain.x, pacmanMain.y)
