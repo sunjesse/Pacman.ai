@@ -113,8 +113,14 @@ class Ghost(pygame.sprite.Sprite):
         elif self.move_left == True:
             self.rect.x -= 0.006*constants.display_height
 
-        constants.screen.blit(self.image, (self.rect.x, self.rect.y))
+        if self.move_left == True:
+            constants.screen.blit(pygame.transform.flip(self.image, True, False), (self.rect.x, self.rect.y))
+        else:
+            constants.screen.blit(self.image, (self.rect.x, self.rect.y))
 
+        pygame.draw.circle(constants.screen, (255, 0, 0), (self.rect.x, self.rect.y), 4)
+
+        
     def calculateDistance(self, x, y):
         return ((x - dynamicPositions.pacman[0])*(x - dynamicPositions.pacman[0]) + (y - dynamicPositions.pacman[1])*(y - dynamicPositions.pacman[1]))**(1/2)
 

@@ -74,6 +74,7 @@ while not crashed:
     print(blinky.willMove)
     blinky.shortest_distance = []
     blinky.tileToMove = []
+    blinky.futureMovementNumber = []
 
     #Update (x, y) position value of pacman in the global variables file dynamicPositions.py
     dynamicPositions.pacman = (pacmanMain.x, pacmanMain.y)
