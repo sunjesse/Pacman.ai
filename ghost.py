@@ -23,7 +23,7 @@ class Ghost(pygame.sprite.Sprite):
         self.image = pygame.image.load("ghost.png")
         self.image = pygame.transform.scale(self.image, (int(constants.display_width*0.025), int(constants.display_height*0.045)))
         self.rect = self.image.get_rect()
-        self.rect = self.rect.move((960, 300))
+        self.rect = self.rect.move((960, 320))
 
         #state
         self.chase = True
@@ -42,6 +42,9 @@ class Ghost(pygame.sprite.Sprite):
         self.tileToMove = []
         self.shortest_distance = []
         self.futureMovementNumber = []
+
+        #wait
+        self.wait = 0
 
     def update(self):
 
@@ -74,34 +77,39 @@ class Ghost(pygame.sprite.Sprite):
         if len(self.shortest_distance) > 0:
             self.willMove = self.futureMovementNumber[self.shortest_distance.index(min(self.shortest_distance))]
 
-            #Determine new direction of movement
-            if self.willMove == 1 and self.willMove != self.movementNumber:
-                self.move_up = True
-                self.move_right = False
-                self.move_down = False
-                self.move_left = False
-                self.movementNumber = self.willMove
+            if self.wait % 8 == 0:
+                #Determine new direction of movement
+                if self.willMove == 1 and self.willMove != self.movementNumber:
+                    self.move_up = True
+                    self.move_right = False
+                    self.move_down = False
+                    self.move_left = False
+                    self.movementNumber = self.willMove
 
-            elif self.willMove == 2 and self.willMove != self.movementNumber:
-                self.move_up = False
-                self.move_right = True
-                self.move_down = False
-                self.move_left = False
-                self.movementNumber = self.willMove
+                elif self.willMove == 2 and self.willMove != self.movementNumber:
+                    self.move_up = False
+                    self.move_right = True
+                    self.move_down = False
+                    self.move_left = False
+                    self.movementNumber = self.willMove
 
-            elif self.willMove == 3 and self.willMove != self.movementNumber:
-                self.move_up = False
-                self.move_right = False
-                self.move_down = True
-                self.move_left = False
-                self.movementNumber = self.willMove
+                elif self.willMove == 3 and self.willMove != self.movementNumber:
+                    self.move_up = False
+                    self.move_right = False
+                    self.move_down = True
+                    self.move_left = False
+                    self.movementNumber = self.willMove
 
-            elif self.willMove == 4 and self.willMove != self.movementNumber:
-                self.move_up = False
-                self.move_right = False
-                self.move_down = False
-                self.move_left = True
-                self.movementNumber = self.willMove
+                elif self.willMove == 4 and self.willMove != self.movementNumber:
+                    self.move_up = False
+                    self.move_right = False
+                    self.move_down = False
+                    self.move_left = True
+                    self.movementNumber = self.willMove
+
+                self.wait = 0
+
+            self.wait += 1
 
         #movements
         if self.move_up == True:
