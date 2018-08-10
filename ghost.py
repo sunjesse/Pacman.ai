@@ -4,7 +4,7 @@ ghost.py
 Ghost class
 
 TO DO:
-1. MAKE SURE GHOST DOES NOT GO BACK TO A TILE IT JUST CAME FROM.
+1. What happens if its stuck?
 '''
 
 import random
@@ -35,8 +35,13 @@ class Ghost(pygame.sprite.Sprite):
         #movements
         self.move_up = False
         self.move_right = False
-        self.move_down = False
+        self.move_down = True
         self.move_left = False
+
+        self.face_left = False
+        self.face_right = True
+
+        self.speed = 0.006*constants.display_height
 
         #intersection decision making
         self.tileToMove = []
@@ -45,6 +50,7 @@ class Ghost(pygame.sprite.Sprite):
 
         #wait
         self.wait = 0
+
 
     def update(self):
 
@@ -77,7 +83,7 @@ class Ghost(pygame.sprite.Sprite):
         if len(self.shortest_distance) > 0:
             self.willMove = self.futureMovementNumber[self.shortest_distance.index(min(self.shortest_distance))]
 
-            if self.wait % 8 == 0:
+            if self.wait % 9 == 0:
                 #Determine new direction of movement
                 if self.willMove == 1 and self.willMove != self.movementNumber:
                     self.move_up = True
@@ -92,6 +98,8 @@ class Ghost(pygame.sprite.Sprite):
                     self.move_down = False
                     self.move_left = False
                     self.movementNumber = self.willMove
+                    self.face_right = True
+                    self.face_left = False
 
                 elif self.willMove == 3 and self.willMove != self.movementNumber:
                     self.move_up = False
@@ -106,6 +114,8 @@ class Ghost(pygame.sprite.Sprite):
                     self.move_down = False
                     self.move_left = True
                     self.movementNumber = self.willMove
+                    self.face_left = True
+                    self.face_right = False
 
                 self.wait = 0
 
@@ -113,18 +123,19 @@ class Ghost(pygame.sprite.Sprite):
 
         #movements
         if self.move_up == True:
-            self.rect.y -= 0.006*constants.display_height
+            self.rect.y -= self.speed
         elif self.move_right == True:
-            self.rect.x += 0.006*constants.display_height
+            self.rect.x += self.speed
         elif self.move_down == True:
-            self.rect.y += 0.006*constants.display_height
+            self.rect.y += self.speed
         elif self.move_left == True:
-            self.rect.x -= 0.006*constants.display_height
+            self.rect.x -= self.speed
 
-        if self.move_left == True:
+        if self.face_left == True:
             constants.screen.blit(pygame.transform.flip(self.image, True, False), (self.rect.x, self.rect.y))
         else:
             constants.screen.blit(self.image, (self.rect.x, self.rect.y))
+
 
         pygame.draw.circle(constants.screen, (255, 0, 0), (self.rect.x, self.rect.y), 4)
 

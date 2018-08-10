@@ -56,18 +56,10 @@ while not crashed:
     label = font.render("Score: " + str(constants.score), 1, (255, 255, 255))
     constants.screen.blit(label, (constants.display_width * 0.02, constants.display_height * 0.9))
 
-    ''' ---DEBUGGING CODE ---- WALL COLLISION DETECTION'''
-    #for wall in walls: #DEBUGGING CODE
-    #    if pacmanMain.rect.colliderect(wall.rect):
-    #        print(crashCount)
-    #        crashCount += 1
-    #for i in generateLevel.intersection:
-    #    if blinky.rect.colliderect(i):
-    #        print(i)
-
     pacmanMain.checkCollision()
     blinky.checkCollision()
     pacmanMain.update()
+    #Update (x, y) position value of pacman in the global variables file dynamicPositions.py
     dynamicPositions.pacman = (pacmanMain.x, pacmanMain.y)
     blinky.update()
     print(blinky.shortest_distance)
@@ -76,8 +68,6 @@ while not crashed:
     blinky.tileToMove = []
     blinky.futureMovementNumber = []
 
-    #Update (x, y) position value of pacman in the global variables file dynamicPositions.py
-    dynamicPositions.pacman = (pacmanMain.x, pacmanMain.y)
     pygame.display.update()
     clock.tick(60)
 
