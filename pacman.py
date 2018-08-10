@@ -61,12 +61,17 @@ while not crashed:
     pacmanMain.update()
     #Update (x, y) position value of pacman in the global variables file dynamicPositions.py
     dynamicPositions.pacman = (pacmanMain.x, pacmanMain.y)
+
     blinky.update()
+    #print(str(blinky.frame_before_rect) + " " + str(blinky.rect))
     print(blinky.shortest_distance)
     print(blinky.willMove)
+
     blinky.shortest_distance = []
     blinky.tileToMove = []
     blinky.futureMovementNumber = []
+
+
 
     pygame.display.update()
     clock.tick(60)
