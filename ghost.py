@@ -4,8 +4,7 @@ ghost.py
 Ghost class
 
 TO DO:
-1. Implement pseudorandom movements during frighten mode.
-2. Add scatter mode.
+1. Add scatter mode.
 '''
 
 import random
@@ -85,11 +84,16 @@ class Ghost(pygame.sprite.Sprite):
                         self.tileToMove.append((tile.x-90, tile.y))
                         self.futureMovementNumber.append(4)
 
+        #movement decision making based on mode.
+     #in chase mode
         for coordinate in self.tileToMove:
             self.shortest_distance.append(self.calculateDistance(coordinate[0], coordinate[1]))
 
         if len(self.shortest_distance) > 0:
-            self.willMove = self.futureMovementNumber[self.shortest_distance.index(min(self.shortest_distance))]
+            if self.chase == True: #in chase mode
+                self.willMove = self.futureMovementNumber[self.shortest_distance.index(min(self.shortest_distance))]
+            elif constants.frightenMode == True: #in frighten mode
+                self.willMove = self.futureMovementNumber[random.randint(0, len(self.futureMovementNumber) - 1)]
 
             if self.wait % 8 == 0:
                 #Determine new direction of movement
@@ -145,11 +149,18 @@ class Ghost(pygame.sprite.Sprite):
 
 
         if constants.frightenMode == False:
+            if self.chase == False:
+                self.chase = True
+
             if self.face_left == True:
                 constants.screen.blit(pygame.transform.flip(self.image, True, False), (self.rect.x, self.rect.y))
             else:
                 constants.screen.blit(self.image, (self.rect.x, self.rect.y))
+
         elif constants.frightenMode == True:
+            if self.chase == True:
+                self.chase = False
+
             constants.screen.blit(self.imageFrightened, (self.rect.x, self.rect.y))
 
         #draw rect.x and rect.y positions
