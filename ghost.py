@@ -4,8 +4,8 @@ ghost.py
 Ghost class
 
 TO DO:
-1. What happens if its stuck?
-
+1. Implement pseudorandom movements during frighten mode.
+2. Add scatter mode.
 '''
 
 import random
@@ -23,6 +23,10 @@ class Ghost(pygame.sprite.Sprite):
 
         self.image = pygame.image.load("ghost.png")
         self.image = pygame.transform.scale(self.image, (int(constants.display_width*0.025), int(constants.display_height*0.045)))
+
+        self.imageFrightened = pygame.image.load("ghostFrightened.png")
+        self.imageFrightened = pygame.transform.scale(self.imageFrightened, (int(constants.display_width*0.025), int(constants.display_height*0.045)))
+
         self.rect = self.image.get_rect()
         self.rect = self.rect.move((960, 320))
 
@@ -30,6 +34,8 @@ class Ghost(pygame.sprite.Sprite):
 
         #state
         self.chase = True
+        #self.scatter = False
+        #self.frightened = False
 
         #movement number, 1 = up, 2 = right, 3 = down, 4 = left, 0 = no movement
         self.movementNumber = 5
@@ -85,7 +91,7 @@ class Ghost(pygame.sprite.Sprite):
         if len(self.shortest_distance) > 0:
             self.willMove = self.futureMovementNumber[self.shortest_distance.index(min(self.shortest_distance))]
 
-            if self.wait % 7 == 0:
+            if self.wait % 8 == 0:
                 #Determine new direction of movement
                 if self.willMove == 1 and self.willMove != self.movementNumber:
                     self.move_up = True
@@ -137,13 +143,17 @@ class Ghost(pygame.sprite.Sprite):
             #self.frame_before_rect = self.rect
             self.rect.x -= self.speed
 
-        if self.face_left == True:
-            constants.screen.blit(pygame.transform.flip(self.image, True, False), (self.rect.x, self.rect.y))
-        else:
-            constants.screen.blit(self.image, (self.rect.x, self.rect.y))
 
+        if constants.frightenMode == False:
+            if self.face_left == True:
+                constants.screen.blit(pygame.transform.flip(self.image, True, False), (self.rect.x, self.rect.y))
+            else:
+                constants.screen.blit(self.image, (self.rect.x, self.rect.y))
+        elif constants.frightenMode == True:
+            constants.screen.blit(self.imageFrightened, (self.rect.x, self.rect.y))
 
-        pygame.draw.circle(constants.screen, (255, 0, 0), (self.rect.x, self.rect.y), 4)
+        #draw rect.x and rect.y positions
+        #pygame.draw.circle(constants.screen, (255, 0, 0), (self.rect.x, self.rect.y), 4)
 
 
     def calculateDistance(self, x, y):
@@ -180,16 +190,3 @@ class Ghost(pygame.sprite.Sprite):
                         self.rect.top += self.speed
                     else:
                         self.rect.top -= self.speed
-
-''' NOT USING FOR THIS SOLUTION
-    def secondMinimumIndex(self, list): #returns the index of the second minimum distance tile. Used when the bot is stuck.
-        self.reducedList = list
-        self.indexOfFirstMin = self.reducedList.index(min(self.reducedList))
-        self.reducedList.remove(min(self.reducedList))
-        self.indexOfSecondMin = self.reducedList.index(min(self.reducedList))
-
-        if self.indexOfSecondMin <= self.indexOfFirstMin:
-            return self.indexOfSecondMin
-        elif self.indexOfSecondMin > self.indexOfFirstMin:
-            return self.indexOfSecondMin + 1
-'''

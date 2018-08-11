@@ -2,10 +2,6 @@
 pacman.py
 
 Main File
-
-SATURDAY TO DO:
-1. Find better method of detect wall collision, for loop is not efficient and fast.
-
 '''
 
 import pygame
@@ -41,6 +37,8 @@ walls = generateLevel.walls
 
 crashCount = 1
 
+frightenModeCount = 0
+
 while not crashed:
 
     for event in pygame.event.get():
@@ -63,13 +61,20 @@ while not crashed:
     dynamicPositions.pacman = (pacmanMain.x, pacmanMain.y)
 
     blinky.update()
-    #print(str(blinky.frame_before_rect) + " " + str(blinky.rect))
+
+    if constants.frightenMode == True:
+        frightenModeCount += 1
+        if frightenModeCount % 150 == 0: #2.5 second frighten mode
+            constants.frightenMode = False
+            frightenModeCount = 0
+
     print(blinky.shortest_distance)
     print(blinky.willMove)
 
     blinky.shortest_distance = []
     blinky.tileToMove = []
     blinky.futureMovementNumber = []
+
 
 
 
