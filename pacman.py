@@ -4,8 +4,8 @@ pacman.py
 Main File
 
 To Do:
-1. Pacman and ghost collision implement.
-2. Add animation of ghost travelling back to base when eliminated.
+1. Add animation of ghost travelling back to base when eliminated.
+2. AI BOYS
 '''
 
 import pygame
