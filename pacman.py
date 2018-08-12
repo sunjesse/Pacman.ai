@@ -75,7 +75,16 @@ def game(game_state):
         #Update (x, y) position value of pacman in the global variables file dynamicPositions.py
         dynamicPositions.pacman = (pacmanMain.x, pacmanMain.y)
 
-        blinky.update()
+        if blinky.reviveMode == False:
+            blinky.update()
+
+        elif blinky.reviveMode == True:
+            if blinky.noMovementTime % 50 == 0: #idle time for 5/6th of a second.
+                blinky.noMovementTime = 1
+                blinky.reviveMode = False
+            blinky.noMovementTime += 1
+            if blinky.noMovementTime % 5 == 0: #shutter respawn effect.
+                constants.screen.blit(blinky.image, (blinky.rect.x, blinky.rect.y))
 
         if constants.frightenMode == True:
             if constants.scatterMode == True or constants.chaseMode == True:
@@ -110,6 +119,8 @@ def game(game_state):
             if constants.frightenMode == True:
                 blinky.rect.x = 960
                 blinky.rect.y = 320
+                constants.frightenMode = False
+                blinky.reviveMode = True
                 constants.score += 5
             else:
                 changeGameState()

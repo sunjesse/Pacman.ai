@@ -27,6 +27,10 @@ class Ghost(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect = self.rect.move((960, 320))
 
+        #state
+        self.reviveMode = False
+        self.noMovementTime = 1
+        
         #movement number, 1 = up, 2 = right, 3 = down, 4 = left, 0 = no movement
         self.movementNumber = 5
         self.willMove = 0
