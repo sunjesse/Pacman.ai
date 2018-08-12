@@ -3,8 +3,6 @@ ghost.py
 
 Ghost class
 
-TO DO:
-1. Add scatter mode.
 '''
 
 import random
@@ -28,13 +26,6 @@ class Ghost(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect = self.rect.move((960, 320))
-
-        #self.frame_before_rect = None
-
-        #state
-        self.chase = True
-        #self.scatter = False
-        #self.frightened = False
 
         #movement number, 1 = up, 2 = right, 3 = down, 4 = left, 0 = no movement
         self.movementNumber = 5
@@ -85,14 +76,16 @@ class Ghost(pygame.sprite.Sprite):
                         self.futureMovementNumber.append(4)
 
         #movement decision making based on mode.
-     #in chase mode
         for coordinate in self.tileToMove:
-            self.shortest_distance.append(self.calculateDistance(coordinate[0], coordinate[1]))
+            if constants.chaseMode == True or constants.frightenMode == True:
+                self.shortest_distance.append(self.calculateDistance(coordinate[0], coordinate[1], dynamicPositions.pacman[0], dynamicPositions.pacman[1]))
+            elif constants.scatterMode == True:
+                self.shortest_distance.append(self.calculateDistance(coordinate[0], coordinate[1], 1920, 0))
 
         if len(self.shortest_distance) > 0:
-            if self.chase == True: #in chase mode
+            if constants.chaseMode == True or constants.scatterMode == True: #in chase mode or scatter, use shortest distance algorithm to reach target tile.
                 self.willMove = self.futureMovementNumber[self.shortest_distance.index(min(self.shortest_distance))]
-            elif constants.frightenMode == True: #in frighten mode
+            if constants.frightenMode == True: #in frighten mode
                 self.willMove = self.futureMovementNumber[random.randint(0, len(self.futureMovementNumber) - 1)]
 
             if self.wait % 8 == 0:
@@ -149,26 +142,27 @@ class Ghost(pygame.sprite.Sprite):
 
 
         if constants.frightenMode == False:
-            if self.chase == False:
-                self.chase = True
-
             if self.face_left == True:
                 constants.screen.blit(pygame.transform.flip(self.image, True, False), (self.rect.x, self.rect.y))
             else:
                 constants.screen.blit(self.image, (self.rect.x, self.rect.y))
+            #if constants.chaseMode == False and constants.scatterMode == False:
+                #constants.chaseMode = True
+
 
         elif constants.frightenMode == True:
-            if self.chase == True:
-                self.chase = False
-
             constants.screen.blit(self.imageFrightened, (self.rect.x, self.rect.y))
+            #if constants.chaseMode == True:
+                #constants.chaseMode = False
+
+            #constants.screen.blit(self.imageFrightened, (self.rect.x, self.rect.y))
 
         #draw rect.x and rect.y positions
         #pygame.draw.circle(constants.screen, (255, 0, 0), (self.rect.x, self.rect.y), 4)
 
 
-    def calculateDistance(self, x, y):
-        return ((x - dynamicPositions.pacman[0])*(x - dynamicPositions.pacman[0]) + (y - dynamicPositions.pacman[1])*(y - dynamicPositions.pacman[1]))**(1/2)
+    def calculateDistance(self, x, y, x1, y1):
+        return ((x - x1)*(x - x1) + (y - y1)*(y - y1))**(1/2)
 
     def checkCollision(self):
         for wall in walls:

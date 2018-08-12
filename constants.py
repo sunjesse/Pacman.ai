@@ -16,3 +16,5 @@ white = (255, 255, 255)
 score = 0
 
 frightenMode = False
+chaseMode = True
+scatterMode = False
