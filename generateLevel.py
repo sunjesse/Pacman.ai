@@ -17,27 +17,28 @@ intersection = []
 allTiles = []
 frightenTiles = [] #contains center coordinates of all tiles on the level.
 
-level = levels.level1
-x = 60
-y = 60
-
-for row in level:
-    for col in row:
-        if col == "W":
-            walls.append(Wall((x, y)))
-        elif col == " " or col == "I" or col == "F":
-            coins.append((x+30, y+30))
-            coinsObjects.append(pygame.Rect(x+30, y+30, \
-            16, 16))
-            allTiles.append((x+30, y+30))
-            if col =="I":
-                intersection.append(pygame.Rect(x+30, y+30, \
-                14, 14))
-            elif col == "F":
-                frightenTiles.append((x+30, y+30))
-        x += 90
-    y += 60
+def createLevel():
+    level = levels.level1
     x = 60
+    y = 60
+
+    for row in level:
+        for col in row:
+            if col == "W":
+                walls.append(Wall((x, y)))
+            elif col == " " or col == "I" or col == "F":
+                coins.append((x+30, y+30))
+                coinsObjects.append(pygame.Rect(x+30, y+30, \
+                16, 16))
+                allTiles.append((x+30, y+30))
+                if col =="I":
+                    intersection.append(pygame.Rect(x+30, y+30, \
+                    14, 14))
+                elif col == "F":
+                    frightenTiles.append((x+30, y+30))
+            x += 90
+        y += 60
+        x = 60
 
 def drawWalls():
     for wall in walls:
