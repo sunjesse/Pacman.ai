@@ -22,8 +22,6 @@ class Pacman(pygame.sprite.Sprite):
 
         self.x = display_width * 0.49
         self.y = display_height * 0.45
-        #self.x = 1000
-        #self.y = 300
 
         self.index = 0
         self.counter = 0
@@ -31,7 +29,7 @@ class Pacman(pygame.sprite.Sprite):
         #self.image = pygame.image.load("agent1.png")
         #self.image = pygame.transform.scale(self.image,(int(display_width*0.03), int(display_height*0.0525)))
         self.rect = self.image.get_rect()
-        self.rect = self.rect.move((self.x,self.y))
+        self.rect = self.rect.move((self.x, self.y))
 
         self.move_left = False
         self.move_right = True
