@@ -30,7 +30,7 @@ class Ghost(pygame.sprite.Sprite):
         #state
         self.reviveMode = False
         self.noMovementTime = 1
-        
+
         #movement number, 1 = up, 2 = right, 3 = down, 4 = left, 0 = no movement
         self.movementNumber = 5
         self.willMove = 0
@@ -94,14 +94,14 @@ class Ghost(pygame.sprite.Sprite):
 
             if self.wait % 8 == 0:
                 #Determine new direction of movement
-                if self.willMove == 1 and self.willMove != self.movementNumber:
+                if self.willMove == 1 and self.movementNumber != 3:
                     self.move_up = True
                     self.move_right = False
                     self.move_down = False
                     self.move_left = False
                     self.movementNumber = self.willMove
 
-                elif self.willMove == 2 and self.willMove != self.movementNumber:
+                elif self.willMove == 2 and self.movementNumber != 4:
                     self.move_up = False
                     self.move_right = True
                     self.move_down = False
@@ -110,14 +110,14 @@ class Ghost(pygame.sprite.Sprite):
                     self.face_right = True
                     self.face_left = False
 
-                elif self.willMove == 3 and self.willMove != self.movementNumber:
+                elif self.willMove == 3 and self.movementNumber != 1:
                     self.move_up = False
                     self.move_right = False
                     self.move_down = True
                     self.move_left = False
                     self.movementNumber = self.willMove
 
-                elif self.willMove == 4 and self.willMove != self.movementNumber:
+                elif self.willMove == 4 and self.movementNumber != 2:
                     self.move_up = False
                     self.move_right = False
                     self.move_down = False
@@ -125,6 +125,10 @@ class Ghost(pygame.sprite.Sprite):
                     self.movementNumber = self.willMove
                     self.face_left = True
                     self.face_right = False
+
+                else: #find new movement number because it cannot go back from where it came from
+                    self.willMove = self.futureMovementNumber[self.secondMinimumIndex(self.futureMovementNumber)]
+                    self.movementNumber = self.willMove
 
                 self.wait = 0
 
@@ -150,17 +154,9 @@ class Ghost(pygame.sprite.Sprite):
                 constants.screen.blit(pygame.transform.flip(self.image, True, False), (self.rect.x, self.rect.y))
             else:
                 constants.screen.blit(self.image, (self.rect.x, self.rect.y))
-            #if constants.chaseMode == False and constants.scatterMode == False:
-                #constants.chaseMode = True
-
 
         elif constants.frightenMode == True:
             constants.screen.blit(self.imageFrightened, (self.rect.x, self.rect.y))
-            #if constants.chaseMode == True:
-                #constants.chaseMode = False
-
-            #constants.screen.blit(self.imageFrightened, (self.rect.x, self.rect.y))
-
         #draw rect.x and rect.y positions
         #pygame.draw.circle(constants.screen, (255, 0, 0), (self.rect.x, self.rect.y), 4)
 
@@ -199,3 +195,13 @@ class Ghost(pygame.sprite.Sprite):
                         self.rect.top += self.speed
                     else:
                         self.rect.top -= self.speed
+
+    def secondMinimumIndex(self, list): #returns the index of the second minimum distance tile. Used when the bot is stuck.
+        self.reducedList = list
+        self.indexOfFirstMin = self.reducedList.index(min(self.reducedList))
+        self.reducedList.remove(min(self.reducedList))
+        self.indexOfSecondMin = self.reducedList.index(min(self.reducedList))
+        if self.indexOfSecondMin <= self.indexOfFirstMin:
+            return self.indexOfSecondMin
+        elif self.indexOfSecondMin > self.indexOfFirstMin:
+            return self.indexOfSecondMin + 1
