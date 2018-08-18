@@ -125,6 +125,7 @@ def game(game_state):
             else:
                 changeGameState()
                 game_state = True
+
         #print(str(blinky.willMove) + " " + str(constants.scatterMode) + " " + str(constants.chaseMode) + " " + str(constants.frightenMode) + " " + str(frightenModeCount))
         #print(blinky.shortest_distance)
         #print(blinky.willMove)

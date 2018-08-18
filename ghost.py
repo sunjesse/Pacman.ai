@@ -128,7 +128,7 @@ class Ghost(pygame.sprite.Sprite):
 
                 else: #find new movement number because it cannot go back from where it came from
                     self.willMove = self.futureMovementNumber[self.secondMinimumIndex(self.futureMovementNumber)]
-                    self.movementNumber = self.willMove
+                    self.movementNumber = 5
 
                 self.wait = 0
 
