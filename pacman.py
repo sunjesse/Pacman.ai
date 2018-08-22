@@ -18,6 +18,7 @@ import levels
 import generateLevel
 import dynamicPositions
 import random
+import featureExtraction
 
 pygame.init()
 pygame.font.init()
@@ -126,10 +127,8 @@ def game(game_state):
                 changeGameState()
                 game_state = True
 
-        #print(str(blinky.willMove) + " " + str(constants.scatterMode) + " " + str(constants.chaseMode) + " " + str(constants.frightenMode) + " " + str(frightenModeCount))
-        #print(blinky.shortest_distance)
-        #print(blinky.willMove)
-
+        print(featureExtraction.on_current_tile(dynamicPositions.pacman), " ", pacmanMain.rect)
+        print(featureExtraction.bfs(featureExtraction.on_current_tile(dynamicPositions.pacman), [featureExtraction.on_current_tile(dynamicPositions.pacman)], 0))
         blinky.shortest_distance = []
         blinky.tileToMove = []
         blinky.futureMovementNumber = []

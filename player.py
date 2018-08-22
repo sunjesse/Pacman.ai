@@ -138,8 +138,8 @@ class Pacman(pygame.sprite.Sprite):
         for coin in coins:
             if self.rect.colliderect(coin):
                 index = coins.index(coin)
-                coins.remove(coin)
+                coins.remove(coin) #remove object
                 if coinPos[index] in generateLevel.frightenTiles:
                     constants.frightenMode = True
-                coinPos.pop(index)
+                coinPos.pop(index) #remove (x,y) position of coin
                 constants.score += 1

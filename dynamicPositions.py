@@ -1,3 +1,3 @@
 import pygame
 
-pacman = (0, 0)
+pacman = (960, 320)
