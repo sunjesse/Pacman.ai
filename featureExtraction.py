@@ -18,36 +18,29 @@ def on_current_tile(position): #returns what tile (x,y) the agent is on
         if position[0] >= tile[0] - 45 and position[0] <= tile[0] + 45 and position[1] >= tile[1] - 30 and position[1] <= tile[1] + 30:
             return tile
 
-def bfs(position, visited, count, coins): #closest food algorithm
+def bfs(adjacent, visited, count, coins): #closest food algorithm
     adjacent_tiles = []
     coin_list = coins
     visited_tiles = visited
     path_length = count
 
-    lengths = []
-
-    if position != None:
-        if (position[0], position[1]-60) not in visited_tiles and (position[0], position[1]-60) in all_tiles:
-            adjacent_tiles.append((position[0], position[1]-60))
-        if (position[0]+90, position[1]) not in visited_tiles and (position[0]+90, position[1]) in all_tiles:
-            adjacent_tiles.append((position[0]+90, position[1]))
-        if (position[0], position[1]+60) not in visited_tiles and (position[0], position[1]+60) in all_tiles:
-            adjacent_tiles.append((position[0], position[1]+60))
-        if (position[0]-90, position[1]) not in visited_tiles and (position[0]-90, position[1]) in all_tiles:
-            adjacent_tiles.append((position[0]-90, position[1]))
-
-        for i in adjacent_tiles:
-            if i in food:
-                lengths.append(path_length)
-                #return path_length
+    for i in adjacent:
+        if i != None:
+            if i in coins:
+                return path_length
             else:
+                if (i[0], i[1]-60) not in visited_tiles and (i[0], i[1]-60) in all_tiles:
+                    adjacent_tiles.append((i[0], i[1]-60))
+                if (i[0]+90, i[1]) not in visited_tiles and (i[0]+90, i[1]) in all_tiles:
+                    adjacent_tiles.append((i[0]+90, i[1]))
+                if (i[0], i[1]+60) not in visited_tiles and (i[0], i[1]+60) in all_tiles:
+                    adjacent_tiles.append((i[0], i[1]+60))
+                if (i[0]-90, i[1]) not in visited_tiles and (i[0]-90, i[1]) in all_tiles:
+                    adjacent_tiles.append((i[0]-90, i[1]))
                 visited_tiles.append(i)
-                return bfs(i, visited_tiles, path_length+1, coin_list)
-        if len(lengths) > 0:
-            return lengths
-    else:
-        return
-
+        else:
+            return 
+    return bfs(adjacent_tiles, visited_tiles, path_length+1, coin_list)
 
 def extract(position, action, food, walls, ghost_positions):
     x = position[0]
