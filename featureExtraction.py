@@ -1,3 +1,7 @@
+'''
+#TO DO:
+1. Get this bfs thing to work smh
+'''
 import dynamicPositions
 import generateLevel
 import constants
