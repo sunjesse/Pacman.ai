@@ -2,10 +2,6 @@
 pacman.py
 
 Main File
-
-To Do:
-1. Add animation of ghost travelling back to base when eliminated.
-2. AI BOYS
 '''
 
 import pygame
@@ -129,11 +125,11 @@ def game(game_state):
                 changeGameState()
                 game_state = True
 
-        #print(featureExtraction.on_current_tile(dynamicPositions.pacman), " ", pacmanMain.rect)
         if featureExtraction.on_current_tile(dynamicPositions.pacman) != pacmanCurrentTile: #only do bfs when pacman changes tiles
             print(featureExtraction.bfs([featureExtraction.on_current_tile(dynamicPositions.pacman)], [featureExtraction.on_current_tile(dynamicPositions.pacman)], 0, generateLevel.coins))
-            #print(featureExtraction.path_count)
             pacmanCurrentTile = featureExtraction.on_current_tile(dynamicPositions.pacman)
+            #print(featureExtraction.shortest_path)
+            #print(pacmanCurrentTile)
 
         blinky.shortest_distance = []
         blinky.tileToMove = []
