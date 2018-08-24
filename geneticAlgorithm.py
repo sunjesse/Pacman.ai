@@ -10,15 +10,15 @@ def populate(count, layerOneNeurons, layerTwoNeurons, outputNeurons):
         net = Neural()
         net.weights_layer_1 = np.empty((0, layerOneNeurons), int)
         net.weights_layer_2 = np.empty((0, layerTwoNeurons), int)
-        for j in range(4):
+        for j in range(layerTwoNeurons):
             row = []
-            for i in range(5):
+            for i in range(layerOneNeurons):
                 row.append(random.uniform(-1, 1))
             net.weights_layer_1 = np.vstack((net.weights_layer_1, row))
 
-        for x in range(4):
+        for x in range(outputNeurons):
             row2 = []
-            for y in range(4):
+            for y in range(layerTwoNeurons):
                 row2.append(random.uniform(-1, 1))
             net.weights_layer_2 = np.vstack((net.weights_layer_2, row2))
         population.append(net)
