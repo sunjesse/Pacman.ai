@@ -15,6 +15,8 @@ import generateLevel
 import dynamicPositions
 import random
 import featureExtraction
+import geneticAlgorithm as genetic
+
 
 pygame.init()
 pygame.font.init()
@@ -28,6 +30,7 @@ pygame.display.set_caption("Pacman")
 clock = pygame.time.Clock()
 
 gameOver = False
+
 
 
 def changeGameState():
@@ -52,6 +55,12 @@ def game(game_state):
 
     time = 0
     scatterModeCount = 0
+
+    networks = genetic.populate(10, 5, 4)
+
+    for i in networks:
+        print(i.weights_layer_1)
+        print(i.weights_layer_2)
 
     while not game_state:
 
