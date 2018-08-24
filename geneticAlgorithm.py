@@ -25,22 +25,69 @@ def populate(count, layerOneNeurons, layerTwoNeurons, outputNeurons):
 
     return population
 
-def calculateFitness():
-    return
 
-def crossover(net_one, net_two):
+def crossover(num_of_children, net_one, net_two):
     #Crossover the weights of two neural networks. Returns 2 child networksself.
-    return
 
-def mutate(net):
+    neuron_one = len(net_one.weights_layer_1[0]) #number of neurons in layer 1
+    neuron_two = len(net_one.weights_layer_2[0]) #number of neurons in layer 2
+    output_neurons = len(net_one.weights_layer_2)
+
+    new_nets = []
+
+    for i in range(num_of_children):
+        child = Neural()
+        child.weights_layer_1 = np.empty((0, neuron_one))
+        child.weights_layer_2 = np.empty((0, neuron_two))
+
+        for j in range(neuron_two): #layer 1 to 2 weights.
+            row = []
+            for i in range(neuron_one):
+                if random.randint(0, 100) >= 50:
+                    row.append(net_one.weights_layer_1[j][i]) #sample from net_one
+                else:
+                    row.append(net_two.weights_layer_1[j][i]) #sample from net_two
+            child.weights_layer_1 = np.vstack((child.weights_layer_1, row))
+
+        for j in range(output_neurons):
+            row = []
+            for i in range(neuron_two):
+                if random.randint(0, 100) >= 50:
+                    row.append(net_one.weights_layer_2[j][i])
+                else:
+                    row.append(net_two.weights_layer_2[j][i])
+            child.weights_layer_2 = np.vstack((child.weights_layer_2, row))
+
+        new_nets.append(child)
+
+    return new_nets
+
+def mutate(net): #Usage: replace old network with new mutated network when assigning to a list.
     #apply mutation algorithm
-    return
+    neuron_one = len(net.weights_layer_1[0]) #number of neurons in layer 1
+    neuron_two = len(net.weights_layer_2[0]) #number of neurons in layer 2
+    output_neurons = len(net.weights_layer_2)
+
+    mutated_network = net
+
+    layers = [net.weights_layer_1, net.weights_layer_2]
+
+    for i in range(1, len(net.weights_layer_1)):
+        if random.randint(0, 100) >= 50: #mutate a weight in first layer
+            mutated_network.weights_layer_1[random.randint(0, neuron_two-1)][random.randint(0, neuron_one-1)] = random.uniform(-1, 1)
+        else:
+            mutated_network.weights_layer_2[random.randint(0, output_neurons-1)][random.randint(0, neuron_two-1)] = random.uniform(-1, 1)
+
+    return mutated_network
 
 def selection(population):
     #return network(s) with highest fitness
     return
 
 def evolve(population):
+    return
+
+def calculateFitness():
     return
 
 def save_data(dataset):

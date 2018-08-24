@@ -56,11 +56,23 @@ def game(game_state):
     time = 0
     scatterModeCount = 0
 
-    networks = genetic.populate(1, 5, 4, 4) #1 neural net, 5 input nodes, 4 hidden nodes
+    networks = genetic.populate(2, 5, 4, 4) #1 neural net, 5 input nodes, 4 hidden nodes
 
-    for i in networks:
-        print(i.weights_layer_1)
-        print(i.weights_layer_2)
+    #for i in networks:
+        #print(i.weights_layer_1)
+        #print(i.weights_layer_2)
+
+    for i in range(1):
+        print(networks[i].weights_layer_1)
+        print(networks[i].weights_layer_2)
+        print(genetic.mutate(networks[i]).weights_layer_1)
+        print(genetic.mutate(networks[i]).weights_layer_2)
+
+    #x = genetic.crossover(1, networks[0], networks[1])
+
+    #for i in range(1):
+        #print(x[i].weights_layer_1)
+        #print(x[i].weights_layer_2)
 
     while not game_state:
 
