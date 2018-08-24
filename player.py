@@ -17,8 +17,8 @@ class Pacman(pygame.sprite.Sprite):
     def __init__(self):
         super(Pacman, self).__init__()
         self.frames = []
-        self.frames.append(pygame.transform.scale(pygame.image.load("agent1x.png"), (int(display_width*0.0224), int(display_height*0.04))))
-        self.frames.append(pygame.transform.scale(pygame.image.load("agent1frame2x.png"), (int(display_width*0.0224), int(display_height*0.04))))
+        self.frames.append(pygame.transform.scale(pygame.image.load("img/agent1x.png"), (int(display_width*0.0224), int(display_height*0.04))))
+        self.frames.append(pygame.transform.scale(pygame.image.load("img/agent1frame2x.png"), (int(display_width*0.0224), int(display_height*0.04))))
 
         self.x = display_width * 0.49
         self.y = display_height * 0.45
