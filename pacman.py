@@ -56,7 +56,7 @@ def game(game_state):
     time = 0
     scatterModeCount = 0
 
-    networks = genetic.populate(10, 5, 4)
+    networks = genetic.populate(1, 5, 4, 4) #1 neural net, 5 input nodes, 4 hidden nodes
 
     for i in networks:
         print(i.weights_layer_1)

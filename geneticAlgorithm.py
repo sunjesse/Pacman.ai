@@ -3,15 +3,24 @@ import random
 import pickle
 from neuralnet import Neural
 
-def populate(count, layerOneNeurons, layerTwoNeurons):
+def populate(count, layerOneNeurons, layerTwoNeurons, outputNeurons):
     population = []
 
-    for i in range(0, count):
+    for i in range(0, count): #dimension of weight matrix from layer i to layer j is neurons in i * neurons in j.
         net = Neural()
-        for i in range(layerOneNeurons):
-            net.weights_layer_1 = np.append(net.weights_layer_1, random.uniform(-1, 1))
-        for i in range(layerTwoNeurons):
-            net.weights_layer_2 = np.append(net.weights_layer_2, random.uniform(-1, 1))
+        net.weights_layer_1 = np.empty((0, layerOneNeurons), int)
+        net.weights_layer_2 = np.empty((0, layerTwoNeurons), int)
+        for j in range(4):
+            row = []
+            for i in range(5):
+                row.append(random.uniform(-1, 1))
+            net.weights_layer_1 = np.vstack((net.weights_layer_1, row))
+
+        for x in range(4):
+            row2 = []
+            for y in range(4):
+                row2.append(random.uniform(-1, 1))
+            net.weights_layer_2 = np.vstack((net.weights_layer_2, row2))
         population.append(net)
 
     return population
