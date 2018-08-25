@@ -64,9 +64,10 @@ def game(game_state):
 
     for i in range(1):
         print(networks[i].weights_layer_1)
-        print(networks[i].weights_layer_2)
-        print(genetic.mutate(networks[i]).weights_layer_1)
-        print(genetic.mutate(networks[i]).weights_layer_2)
+        print(networks[i].relu(networks[i].weights_layer_1))
+        print(networks[i].drelu(networks[i].weights_layer_1))
+        #print(genetic.mutate(networks[i]).weights_layer_1)
+        #print(genetic.mutate(networks[i]).weights_layer_2)
 
     #x = genetic.crossover(1, networks[0], networks[1])
 

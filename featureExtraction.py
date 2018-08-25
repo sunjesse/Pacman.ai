@@ -48,6 +48,43 @@ def bfs(adjacent, visited, count, coins): #closest food algorithm
 
     return bfs(adjacent_tiles, visited_tiles, path_length+1, coin_list)
 
+def check_tile(item, position, steps_away):
+    '''
+    Item (list) is a member of [food, wall].
+    Position is the tile the pacman agent is currently on.
+    Steps_away is num of tiles away from pacman agent that wishes to be checked.
+    '''
+
+    binary_return = [] # 1 if item present in tile, 0 if not. First index is up, then clockwise.
+
+    x = 90
+    y = 60
+
+    if steps_away = 2:
+        x = 180
+        y = 120
+
+    if (i[0], i[1]-y) in item:
+        binary_return.append(1)
+    else:
+        binary_return.append(0)
+
+    if (i[0]+x, i[1]) in item:
+        binary_return.append(1)
+    else:
+        binary_return.append(0)
+
+    if (i[0], i[1]+y) in item:
+        binary_return.append(1)
+    else:
+        binary_return.append(0)
+
+    if (i[0]-x, i[1]) in item:
+        binary_return.append(1)
+    else:
+        binary_return.append(0)
+
+    return binary_return
 
 def extract(position, action, food, walls, ghost_positions):
     x = position[0]

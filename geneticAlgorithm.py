@@ -75,7 +75,7 @@ def mutate(net): #Usage: replace old network with new mutated network when assig
     for i in range(1, len(net.weights_layer_1)):
         if random.randint(0, 100) >= 50: #mutate a weight in first layer
             mutated_network.weights_layer_1[random.randint(0, neuron_two-1)][random.randint(0, neuron_one-1)] = random.uniform(-1, 1)
-        else:
+        else: #mutate a weight in second layer
             mutated_network.weights_layer_2[random.randint(0, output_neurons-1)][random.randint(0, neuron_two-1)] = random.uniform(-1, 1)
 
     return mutated_network
