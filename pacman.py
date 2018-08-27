@@ -165,12 +165,6 @@ def game(game_state):
 
         pacmanMain.automate(networks[0].process(inputVector))
         print(networks[0].process(inputVector))
-            #print(networks[0].show(inputVector))
-
-
-        #print(featureExtraction.distance_between((pacmanMain.rect.x, pacmanMain.rect.y), (blinky.rect.x, blinky.rect.y)))
-        #if time % 60 == 0:
-        #print(featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 2, "ghost", blinkyCurrentTile))
 
         blinky.shortest_distance = []
         blinky.tileToMove = []

@@ -128,7 +128,7 @@ def extract(food_pos, enemy_pos, food_pos_2, enemy_pos_2, food_closests, distanc
         input_vector.extend(enemy_pos_2)
 
     input_vector.append(food_closests)
-    input_vector.append(distance_between[0])
-    input_vector.append(distance_between[1])
+    input_vector.append(distance_between[0]/max(constants.display_width, constants.display_height))
+    input_vector.append(distance_between[1]/max(constants.display_width, constants.display_height))
 
     return input_vector
