@@ -114,6 +114,47 @@ class Pacman(pygame.sprite.Sprite):
             self.move_right = False
             self.move_left = False
 
+    def automate(self, movement):
+        if movement == 0:
+            self.y -= 0.006*constants.display_height
+            self.rect.y = self.y
+            self.rect = self.rect.move(0, -0.006*constants.display_height)
+            self.move_up = True
+            self.move_down = False
+            self.move_right = False
+            self.move_left = False
+
+        elif movement == 1:
+            self.x += 0.006*constants.display_height
+            self.rect.x = self.x
+            self.move_left = False
+            self.move_right = True
+            self.move_up = False
+            self.move_down = False
+
+            self.face_right = True
+            self.face_left = False
+            self.rect = self.rect.move(0.006*constants.display_height, 0)
+        elif movement == 2:
+            self.y += 0.006*constants.display_height
+            self.rect.y = self.y
+            self.rect = self.rect.move(0, 0.006*constants.display_height)
+            self.move_up = False
+            self.move_down = True
+            self.move_right = False
+            self.move_left = False
+        elif movement == 3:
+            self.x -= 0.006*constants.display_height
+            self.rect.x = self.x
+            self.move_left = True
+            self.move_right = False
+            self.move_up = False
+            self.move_down = False
+
+            self.face_left = True
+            self.face_right = False
+            self.rect = self.rect.move(-0.006*constants.display_height, 0)
+
     #Wall collisions
     def checkCollision(self):
         for wall in walls:

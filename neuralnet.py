@@ -16,3 +16,13 @@ class Neural():
 
     def drelu(self, x):
         return 1 * (x>0)
+
+    def process(self, input):
+        a1 = self.relu(np.dot(self.weights_layer_1, input))
+        output = np.dot(self.weights_layer_2, a1)
+        return list(output).index(np.amax(output))
+
+    def show(self, input):
+        a1 = self.relu(np.dot(self.weights_layer_1, input))
+        output = np.dot(self.weights_layer_2, a1)
+        return output

@@ -31,7 +31,7 @@ clock = pygame.time.Clock()
 
 gameOver = False
 
-
+iteration = 1
 
 def changeGameState():
     global gameOver
@@ -48,7 +48,7 @@ def game(game_state):
     blinky = Ghost()
     walls = generateLevel.walls
 
-    pacmanCurrentTile = featureExtraction.on_current_tile(dynamicPositions.pacman)
+    pacmanCurrentTile = featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)
     crashCount = 1
 
     frightenModeCount = 0
@@ -56,7 +56,7 @@ def game(game_state):
     time = 0
     scatterModeCount = 0
 
-    networks = genetic.populate(2, 5, 4, 4) #1 neural net, 5 input nodes, 4 hidden nodes
+    networks = genetic.populate(1, 6, 6, 4) #1 neural net, 5 input nodes, 4 hidden nodes
 
     #for i in networks:
         #print(i.weights_layer_1)
@@ -64,8 +64,8 @@ def game(game_state):
 
     for i in range(1):
         print(networks[i].weights_layer_1)
-        print(networks[i].relu(networks[i].weights_layer_1))
-        print(networks[i].drelu(networks[i].weights_layer_1))
+        #print(networks[i].relu(networks[i].weights_layer_1))
+        #print(networks[i].drelu(networks[i].weights_layer_1))
         #print(genetic.mutate(networks[i]).weights_layer_1)
         #print(genetic.mutate(networks[i]).weights_layer_2)
 
@@ -89,6 +89,9 @@ def game(game_state):
 
         label = font.render("Score: " + str(constants.score), 1, (255, 255, 255))
         constants.screen.blit(label, (constants.display_width * 0.02, constants.display_height * 0.9))
+
+        label2 = font.render("Generation: 1 Iteration:" + str(iteration), 1, (255, 255, 255))
+        constants.screen.blit(label2, (constants.display_width * 0.02, constants.display_height * 0.8))
 
         pacmanMain.checkCollision()
         blinky.checkCollision()
@@ -147,11 +150,19 @@ def game(game_state):
                 changeGameState()
                 game_state = True
 
-        if featureExtraction.on_current_tile(dynamicPositions.pacman) != pacmanCurrentTile: #only do bfs when pacman changes tiles
-            print(featureExtraction.bfs([featureExtraction.on_current_tile(dynamicPositions.pacman)], [featureExtraction.on_current_tile(dynamicPositions.pacman)], 0, generateLevel.coins))
-            pacmanCurrentTile = featureExtraction.on_current_tile(dynamicPositions.pacman)
-            #print(featureExtraction.shortest_path)
-            #print(pacmanCurrentTile)
+
+        if featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain) != pacmanCurrentTile and featureExtraction: #only do bfs when pacman changes tiles
+            pacmanCurrentTile = featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)
+
+            closest_food = featureExtraction.bfs([featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], [featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], 0, generateLevel.coins)
+            #print(closest_food)
+            inputVector = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 1)
+            inputVector.append(closest_food)
+            inputVector.append(random.uniform(-1, 1))
+
+            pacmanMain.automate(networks[0].process(inputVector))
+            print(networks[0].process(inputVector))
+            print(networks[0].show(inputVector))
 
         blinky.shortest_distance = []
         blinky.tileToMove = []
@@ -163,6 +174,7 @@ def game(game_state):
 game(gameOver)
 while gameOver == True:
     gameOver = False
+    iteration += 1
     game(gameOver)
 
 pygame.quit()
