@@ -148,7 +148,6 @@ class Ghost(pygame.sprite.Sprite):
             #self.frame_before_rect = self.rect
             self.rect.x -= self.speed
 
-
         if constants.frightenMode == False:
             if self.face_left == True:
                 constants.screen.blit(pygame.transform.flip(self.image, True, False), (self.rect.x, self.rect.y))
@@ -205,3 +204,6 @@ class Ghost(pygame.sprite.Sprite):
             return self.indexOfSecondMin
         elif self.indexOfSecondMin > self.indexOfFirstMin:
             return self.indexOfSecondMin + 1
+
+    def return_movement_number(self):
+        return self.movementNumber

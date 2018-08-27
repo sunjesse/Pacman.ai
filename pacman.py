@@ -49,6 +49,7 @@ def game(game_state):
     walls = generateLevel.walls
 
     pacmanCurrentTile = featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)
+    blinkyCurrentTile = featureExtraction.on_current_tile((blinky.rect.x, blinky.rect.y), blinky)
     crashCount = 1
 
     frightenModeCount = 0
@@ -56,11 +57,7 @@ def game(game_state):
     time = 0
     scatterModeCount = 0
 
-    networks = genetic.populate(1, 6, 6, 4) #1 neural net, 5 input nodes, 4 hidden nodes
-
-    #for i in networks:
-        #print(i.weights_layer_1)
-        #print(i.weights_layer_2)
+    networks = genetic.populate(1, 27, 20, 4) #1 neural net, 5 input nodes, 4 hidden nodes
 
     for i in range(1):
         print(networks[i].weights_layer_1)
@@ -150,19 +147,30 @@ def game(game_state):
                 changeGameState()
                 game_state = True
 
+        if featureExtraction.on_current_tile((blinky.rect.x, blinky.rect.y), blinky) != blinkyCurrentTile: #blinky change tile
+            blinkyCurrentTile = featureExtraction.on_current_tile((blinky.rect.x, blinky.rect.y), blinky)
 
-        if featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain) != pacmanCurrentTile and featureExtraction: #only do bfs when pacman changes tiles
+        if featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain) != pacmanCurrentTile: #only do bfs when pacman changes tiles
             pacmanCurrentTile = featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)
 
-            closest_food = featureExtraction.bfs([featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], [featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], 0, generateLevel.coins)
-            #print(closest_food)
-            inputVector = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 1)
-            inputVector.append(closest_food)
-            inputVector.append(random.uniform(-1, 1))
+        #features
+        food_pos = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 1, "food", blinkyCurrentTile)
+        enemy_pos = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 1, "ghost", blinkyCurrentTile)
+        food_pos_2 = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 2, "food", blinkyCurrentTile)
+        enemy_pos_2 = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 2, "ghost", blinkyCurrentTile)
+        closest_food = featureExtraction.bfs([featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], [featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], 0, generateLevel.coins)
+        distance_between = featureExtraction.distance_between((pacmanMain.rect.x, pacmanMain.rect.y), (blinky.rect.x, blinky.rect.y))
 
-            pacmanMain.automate(networks[0].process(inputVector))
-            print(networks[0].process(inputVector))
-            print(networks[0].show(inputVector))
+        inputVector = featureExtraction.extract(food_pos, enemy_pos, food_pos_2, enemy_pos_2, closest_food, distance_between, constants.frightenMode)
+
+        pacmanMain.automate(networks[0].process(inputVector))
+        print(networks[0].process(inputVector))
+            #print(networks[0].show(inputVector))
+
+
+        #print(featureExtraction.distance_between((pacmanMain.rect.x, pacmanMain.rect.y), (blinky.rect.x, blinky.rect.y)))
+        #if time % 60 == 0:
+        #print(featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 2, "ghost", blinkyCurrentTile))
 
         blinky.shortest_distance = []
         blinky.tileToMove = []

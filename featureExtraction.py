@@ -17,7 +17,7 @@ def on_current_tile(position, player): #returns what tile (x,y) the agent is on
     for tile in all_tiles:
         if position[0] >= tile[0] - 45 and position[0] <= tile[0] + 45 and position[1] >= tile[1] - 30 and position[1] <= tile[1] + 30:
             return tile
-    return (player.x, player.y)
+    return (player.rect.x, player.rect.y)
 
 def bfs(adjacent, visited, count, coins): #closest food algorithm
     #global shortest_path
@@ -46,7 +46,7 @@ def bfs(adjacent, visited, count, coins): #closest food algorithm
 
     return bfs(adjacent_tiles, visited_tiles, path_length+1, coin_list)
 
-def check_tile(item, position, steps_away):
+def check_tile(item, position, steps_away, type, ghost_position):
     '''
     Item (list) is a member of [food].
     Position is the tile the pacman agent is currently on.
@@ -63,28 +63,72 @@ def check_tile(item, position, steps_away):
         y = 120
 
     if position != None:
-        if (position[0], position[1]-y) in item:
-            binary_return.append(1)
-        else:
-            binary_return.append(0)
+        if type == "food":
+            if (position[0], position[1]-y) in item:
+                binary_return.append(1)
+            else:
+                binary_return.append(0)
 
-        if (position[0]+x, position[1]) in item:
-            binary_return.append(1)
-        else:
-            binary_return.append(0)
+            if (position[0]+x, position[1]) in item:
+                binary_return.append(1)
+            else:
+                binary_return.append(0)
 
-        if (position[0], position[1]+y) in item:
-            binary_return.append(1)
-        else:
-            binary_return.append(0)
+            if (position[0], position[1]+y) in item:
+                binary_return.append(1)
+            else:
+                binary_return.append(0)
 
-        if (position[0]-x, position[1]) in item:
-            binary_return.append(1)
-        else:
-            binary_return.append(0)
+            if (position[0]-x, position[1]) in item:
+                binary_return.append(1)
+            else:
+                binary_return.append(0)
+
+        elif type == "ghost":
+            if (position[0], position[1]-y) == ghost_position:
+                binary_return.append(1)
+            else:
+                binary_return.append(0)
+
+            if (position[0]+x, position[1]) == ghost_position:
+                binary_return.append(1)
+            else:
+                binary_return.append(0)
+
+            if (position[0], position[1]+y) == ghost_position:
+                binary_return.append(1)
+            else:
+                binary_return.append(0)
+
+            if (position[0]-x, position[1]) == ghost_position:
+                binary_return.append(1)
+            else:
+                binary_return.append(0)
 
     return binary_return
 
-def extract(position, action, food, walls, ghost_positions):
-    x = position[0]
-    y = position[1]
+def distance_between(position_one, position_two):
+    return (position_one[0] - position_two[0], position_one[1] - position_two[1])
+
+def extract(food_pos, enemy_pos, food_pos_2, enemy_pos_2, food_closests, distance_between, ghost_scared):
+    input_vector = []
+
+    input_vector.extend(food_pos)
+    input_vector.extend(food_pos_2)
+
+    if ghost_scared == False:
+        input_vector.extend(enemy_pos)
+        input_vector.extend(enemy_pos_2)
+        input_vector.extend([0, 0, 0, 0])
+        input_vector.extend([0, 0, 0, 0])
+    elif ghost_scared:
+        input_vector.extend([0, 0, 0, 0])
+        input_vector.extend([0, 0, 0, 0])
+        input_vector.extend(enemy_pos)
+        input_vector.extend(enemy_pos_2)
+
+    input_vector.append(food_closests)
+    input_vector.append(distance_between[0])
+    input_vector.append(distance_between[1])
+
+    return input_vector
