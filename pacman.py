@@ -32,6 +32,7 @@ clock = pygame.time.Clock()
 gameOver = False
 
 iteration = 1
+#networks = genetic.populate(1, 27, 20, 20, 4) #generation one
 
 def changeGameState():
     global gameOver
@@ -41,6 +42,7 @@ def changeGameState():
         gameOver = True
 
 def game(game_state):
+    #global networks
 
     constants.score = 0
     generateLevel.createLevel()
@@ -48,8 +50,12 @@ def game(game_state):
     blinky = Ghost()
     walls = generateLevel.walls
 
+    #initialize some feature variables
     pacmanCurrentTile = featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)
     blinkyCurrentTile = featureExtraction.on_current_tile((blinky.rect.x, blinky.rect.y), blinky)
+    closest_food = featureExtraction.bfs([featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], [featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], 0, generateLevel.coins)
+
+
     crashCount = 1
 
     frightenModeCount = 0
@@ -57,10 +63,10 @@ def game(game_state):
     time = 0
     scatterModeCount = 0
 
-    networks = genetic.populate(1, 27, 20, 4) #1 neural net, 5 input nodes, 4 hidden nodes
+    networks = genetic.populate(1, 27, 20, 20, 4) #1 neural net, 5 input nodes, 4 hidden nodes
 
-    for i in range(1):
-        print(networks[i].weights_layer_1)
+    #for i in range(1):
+        #print(networks[i].weights_layer_3)
         #print(networks[i].relu(networks[i].weights_layer_1))
         #print(networks[i].drelu(networks[i].weights_layer_1))
         #print(genetic.mutate(networks[i]).weights_layer_1)
@@ -87,8 +93,8 @@ def game(game_state):
         label = font.render("Score: " + str(constants.score), 1, (255, 255, 255))
         constants.screen.blit(label, (constants.display_width * 0.02, constants.display_height * 0.9))
 
-        label2 = font.render("Generation: 1 Iteration:" + str(iteration), 1, (255, 255, 255))
-        constants.screen.blit(label2, (constants.display_width * 0.02, constants.display_height * 0.8))
+        #label2 = font.render("Generation: 1 Iteration:" + str(iteration), 1, (255, 255, 255))
+        #constants.screen.blit(label2, (constants.display_width * 0.02, constants.display_height * 0.8))
 
         pacmanMain.checkCollision()
         blinky.checkCollision()
@@ -152,19 +158,21 @@ def game(game_state):
 
         if featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain) != pacmanCurrentTile: #only do bfs when pacman changes tiles
             pacmanCurrentTile = featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)
+            closest_food = featureExtraction.bfs([featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], [featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], 0, generateLevel.coins)
+
 
         #features
         food_pos = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 1, "food", blinkyCurrentTile)
         enemy_pos = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 1, "ghost", blinkyCurrentTile)
         food_pos_2 = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 2, "food", blinkyCurrentTile)
         enemy_pos_2 = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 2, "ghost", blinkyCurrentTile)
-        closest_food = featureExtraction.bfs([featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], [featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], 0, generateLevel.coins)
         distance_between = featureExtraction.distance_between((pacmanMain.rect.x, pacmanMain.rect.y), (blinky.rect.x, blinky.rect.y))
 
         inputVector = featureExtraction.extract(food_pos, enemy_pos, food_pos_2, enemy_pos_2, closest_food, distance_between, constants.frightenMode)
 
         pacmanMain.automate(networks[0].process(inputVector))
-        print(networks[0].process(inputVector))
+        #print(networks[0].process(inputVector))
+        #print(networks[0].show(inputVector))
 
         blinky.shortest_distance = []
         blinky.tileToMove = []
@@ -179,5 +187,13 @@ while gameOver == True:
     iteration += 1
     game(gameOver)
 
+'''
+for i in range(len(networks)):
+    print(i)
+    game(gameOver, i)
+    if gameOver == True:
+        gameOver = False
+        continue
+'''
 pygame.quit()
 quit()

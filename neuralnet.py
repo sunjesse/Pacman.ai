@@ -8,6 +8,7 @@ class Neural():
 
         self.weights_layer_1 = np.array([])#Randomize
         self.weights_layer_2 = np.array([])#Randomize
+        self.weights_layer_3 = np.array([])#Randomize
 
         self.fitness = 0
 
@@ -19,10 +20,12 @@ class Neural():
 
     def process(self, input):
         a1 = self.relu(np.dot(self.weights_layer_1, input))
-        output = np.dot(self.weights_layer_2, a1)
+        a2 = self.relu(np.dot(self.weights_layer_2, a1))
+        output = np.dot(self.weights_layer_3, a2)
         return list(output).index(np.amax(output))
 
     def show(self, input):
         a1 = self.relu(np.dot(self.weights_layer_1, input))
-        output = np.dot(self.weights_layer_2, a1)
+        a2 = self.relu(np.dot(self.weights_layer_2, a1))
+        output = np.dot(self.weights_layer_3, a2)
         return output
