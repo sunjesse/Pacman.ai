@@ -7,6 +7,7 @@ Main File
 import pygame
 import sys
 from player import Pacman
+import player
 from ghost import Ghost
 import constants
 from wall import Wall
@@ -41,6 +42,14 @@ def changeGameState():
     elif gameOver == False:
         gameOver = True
 
+def resetLists():
+    generateLevel.walls = []
+    generateLevel.coins = []
+    generateLevel.coinsObjects = []
+    generateLevel.intersection = []
+    generateLevel.allTiles = []
+    generateLevel.frightenTiles = []
+
 def game(game_state):
     #global networks
 
@@ -65,25 +74,17 @@ def game(game_state):
 
     networks = genetic.populate(1, 27, 20, 20, 4) #1 neural net, 5 input nodes, 4 hidden nodes
 
-    #for i in range(1):
-        #print(networks[i].weights_layer_3)
-        #print(networks[i].relu(networks[i].weights_layer_1))
-        #print(networks[i].drelu(networks[i].weights_layer_1))
-        #print(genetic.mutate(networks[i]).weights_layer_1)
-        #print(genetic.mutate(networks[i]).weights_layer_2)
-
-    #x = genetic.crossover(1, networks[0], networks[1])
-
-    #for i in range(1):
-        #print(x[i].weights_layer_1)
-        #print(x[i].weights_layer_2)
-
     while not game_state:
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                game_state = True
                 changeGameState()
+                game_state = True
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    changeGameState()
+                    game_state = True #Set fitness to very negative number like -1000
 
         constants.screen.fill(black)
 
@@ -149,6 +150,7 @@ def game(game_state):
                 constants.frightenMode = False
                 blinky.reviveMode = True
                 constants.score += 5
+                print(True)
             else:
                 changeGameState()
                 game_state = True
@@ -159,7 +161,6 @@ def game(game_state):
         if featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain) != pacmanCurrentTile: #only do bfs when pacman changes tiles
             pacmanCurrentTile = featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)
             closest_food = featureExtraction.bfs([featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], [featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], 0, generateLevel.coins)
-
 
         #features
         food_pos = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 1, "food", blinkyCurrentTile)
@@ -173,7 +174,6 @@ def game(game_state):
         pacmanMain.automate(networks[0].process(inputVector))
         #print(networks[0].process(inputVector))
         #print(networks[0].show(inputVector))
-
         blinky.shortest_distance = []
         blinky.tileToMove = []
         blinky.futureMovementNumber = []
@@ -185,7 +185,11 @@ game(gameOver)
 while gameOver == True:
     gameOver = False
     iteration += 1
+    resetLists()
     game(gameOver)
+
+pygame.quit()
+quit()
 
 '''
 for i in range(len(networks)):
@@ -195,5 +199,3 @@ for i in range(len(networks)):
         gameOver = False
         continue
 '''
-pygame.quit()
-quit()

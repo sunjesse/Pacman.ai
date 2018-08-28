@@ -9,6 +9,7 @@ import pygame
 import levels
 from wall import Wall
 import constants
+import player
 
 walls = []
 coins = []
@@ -39,6 +40,9 @@ def createLevel():
             x += 90
         y += 60
         x = 60
+
+    player.coins = coinsObjects
+    player.coinPos = coins
 
 def drawWalls():
     for wall in walls:
