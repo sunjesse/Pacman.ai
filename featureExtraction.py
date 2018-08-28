@@ -9,6 +9,7 @@ from collections import deque
 from player import Pacman
 #ghost_positions is a list of tuples (x,y) of each ghost's position
 all_tiles = generateLevel.allTiles
+walls = generateLevel.walls
 food = generateLevel.coins
 
 #shortest_path = []
@@ -17,6 +18,21 @@ def on_current_tile(position, player): #returns what tile (x,y) the agent is on
     for tile in all_tiles:
         if position[0] >= tile[0] - 45 and position[0] <= tile[0] + 45 and position[1] >= tile[1] - 30 and position[1] <= tile[1] + 30:
             return tile
+            
+    for wall in walls:
+        if player.rect.colliderect(wall.rect):
+            if player.move_up == True:
+                return (wall.rect.centerx-15, wall.rect.centery+60)
+
+            if player.move_down == True:
+                return (wall.rect.centerx-15, wall.rect.centery-60)
+
+            if player.move_right == True:
+                return (wall.rect.centerx + 75, wall.rect.centery)
+
+            if player.move_left == True:
+                return (wall.rect.centerx - 105, wall.rect.centery)
+
     return (player.rect.x, player.rect.y)
 
 def bfs(adjacent, visited, count, coins): #closest food algorithm

@@ -39,6 +39,7 @@ class Pacman(pygame.sprite.Sprite):
         self.face_left = False
         self.face_right = True
 
+
     def update(self):
 
         self.moveAgent()
@@ -159,7 +160,6 @@ class Pacman(pygame.sprite.Sprite):
     def checkCollision(self):
         for wall in walls:
             if self.rect.colliderect(wall.rect):
-
                 if self.move_up == True:
                     self.rect.top = wall.rect.bottom
                     self.y = wall.rect.bottom
