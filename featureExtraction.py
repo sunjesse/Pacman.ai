@@ -18,7 +18,7 @@ def on_current_tile(position, player): #returns what tile (x,y) the agent is on
     for tile in all_tiles:
         if position[0] >= tile[0] - 45 and position[0] <= tile[0] + 45 and position[1] >= tile[1] - 30 and position[1] <= tile[1] + 30:
             return tile
-            
+
     for wall in walls:
         if player.rect.colliderect(wall.rect):
             if player.move_up == True:
@@ -78,24 +78,26 @@ def check_tile(item, position, steps_away, type, ghost_position):
         x = 180
         y = 120
 
+    item_list = item
+
     if position != None:
-        if type == "food":
-            if (position[0], position[1]-y) in item:
+        if type == "food" or type == "wall":
+            if (position[0], position[1]-y) in item_list:
                 binary_return.append(1)
             else:
                 binary_return.append(0)
 
-            if (position[0]+x, position[1]) in item:
+            if (position[0]+x, position[1]) in item_list:
                 binary_return.append(1)
             else:
                 binary_return.append(0)
 
-            if (position[0], position[1]+y) in item:
+            if (position[0], position[1]+y) in item_list:
                 binary_return.append(1)
             else:
                 binary_return.append(0)
 
-            if (position[0]-x, position[1]) in item:
+            if (position[0]-x, position[1]) in item_list:
                 binary_return.append(1)
             else:
                 binary_return.append(0)
@@ -126,7 +128,7 @@ def check_tile(item, position, steps_away, type, ghost_position):
 def distance_between(position_one, position_two):
     return (position_one[0] - position_two[0], position_one[1] - position_two[1])
 
-def extract(food_pos, enemy_pos, food_pos_2, enemy_pos_2, food_closests, distance_between, ghost_scared):
+def extract(food_pos, enemy_pos, wall_pos, food_pos_2, enemy_pos_2, wall_pos_2, food_closests, distance_between, ghost_scared):
     input_vector = []
 
     input_vector.extend(food_pos)
@@ -143,6 +145,8 @@ def extract(food_pos, enemy_pos, food_pos_2, enemy_pos_2, food_closests, distanc
         input_vector.extend(enemy_pos)
         input_vector.extend(enemy_pos_2)
 
+    input_vector.extend(wall_pos)
+    input_vector.extend(wall_pos_2)
     input_vector.append(food_closests)
     input_vector.append(distance_between[0]/max(constants.display_width, constants.display_height))
     input_vector.append(distance_between[1]/max(constants.display_width, constants.display_height))

@@ -10,6 +10,7 @@ import generateLevel
 display_width = constants.display_width
 display_height = constants.display_height
 walls = generateLevel.walls
+wallPositions = generateLevel.wallPositions
 coins = generateLevel.coinsObjects
 coinPos = generateLevel.coins
 

@@ -12,6 +12,7 @@ import constants
 import player
 
 walls = []
+wallPositions = [] #in terms of tile positions
 coins = []
 coinsObjects = []
 intersection = []
@@ -26,7 +27,9 @@ def createLevel():
     for row in level:
         for col in row:
             if col == "W":
-                walls.append(Wall((x, y)))
+                wall = Wall((x,y))
+                walls.append(wall)
+                wallPositions.append((wall.rect.centerx-15, wall.rect.centery))
             elif col == " " or col == "I" or col == "F":
                 coins.append((x+30, y+30))
                 coinsObjects.append(pygame.Rect(x+30, y+30, \
