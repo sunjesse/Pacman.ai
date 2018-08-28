@@ -129,6 +129,9 @@ def distance_between(position_one, position_two):
     return (position_one[0] - position_two[0], position_one[1] - position_two[1])
 
 def extract(food_pos, enemy_pos, wall_pos, food_pos_2, enemy_pos_2, wall_pos_2, food_closests, distance_between, ghost_scared):
+    '''
+    input_vector = food_pos[4], food_pos_2[4], enemy_pos[4], enemy_pos_2[4], enemy_scared_pos[4], enemy_scared_pos_2[4], wall_pos[4], wall_pos_2[4], food_closts int, delta x float, delta y float
+    '''
     input_vector = []
 
     input_vector.extend(food_pos)
@@ -148,7 +151,7 @@ def extract(food_pos, enemy_pos, wall_pos, food_pos_2, enemy_pos_2, wall_pos_2, 
     input_vector.extend(wall_pos)
     input_vector.extend(wall_pos_2)
     input_vector.append(food_closests)
-    input_vector.append(distance_between[0]/max(constants.display_width, constants.display_height))
-    input_vector.append(distance_between[1]/max(constants.display_width, constants.display_height))
+    input_vector.append(distance_between[0]/constants.display_width)
+    input_vector.append(distance_between[1]/constants.display_width)
 
     return input_vector
