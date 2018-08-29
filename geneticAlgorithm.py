@@ -130,7 +130,7 @@ def evolve(population, new_population_size): #population is list of best network
                 else:
                     break
 
-    new_generation.extend(populate(new_population_size-len(new_generation), 2, 2, 2, 2))
+    new_generation.extend(populate(new_population_size-len(new_generation), 35, 26, 26, 4))
 
     return new_generation
 
