@@ -110,9 +110,6 @@ def selection(population):
 def evolve(population):
     return
 
-def calculateFitness():
-    return
-
 def save_data(dataset):
     data = dataset
     output_file = "training.data"

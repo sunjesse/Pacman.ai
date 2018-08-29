@@ -89,6 +89,8 @@ def game(game_state):
                     changeGameState()
                     game_state = True #Set fitness to very negative number like -1000
 
+        score_before_script = constants.score
+
         constants.screen.fill(black)
 
         generateLevel.drawWalls()
@@ -153,9 +155,16 @@ def game(game_state):
                 constants.frightenMode = False
                 blinky.reviveMode = True
                 constants.score += 5
-                print(True)
-            else:
+
+                '''#FITNESS: update fitness - for eating ghost'''
+                networks[0].fitness += 200
+                print(networks[0].fitness)
+
+            else: #lose the game
                 changeGameState()
+                '''#FITNESS: update fitness - losing the game'''
+                networks[0].fitness -= 500
+                print("Final fitness: "  + str(networks[0].fitness))
                 game_state = True
 
         if featureExtraction.on_current_tile((blinky.rect.x, blinky.rect.y), blinky) != blinkyCurrentTile: #blinky change tile
@@ -179,6 +188,23 @@ def game(game_state):
         pacmanMain.automate(networks[0].process(inputVector))
         #print(networks[0].process(inputVector))
         #print(networks[0].show(inputVector))
+
+        ''' ---- #FITNESS: Update fitness of network ---- '''
+        score_after_script = constants.score
+        if not game_state: #don't update score if game is over
+            if time % 5 == 0: #time penalty
+                networks[0].fitness -= 1
+                print(networks[0].fitness)
+
+            if score_after_script - score_before_script == 1: #reward for eating a food/coin
+                networks[0].fitness += 10
+                print(networks[0].fitness)
+
+            if len(generateLevel.coinsObjects) == 0: #if pacman wins the game
+                networks[0].fitness += 500
+                print(networks[0].fitness)
+        ''' ---- End update fitness of network ---- '''
+
         blinky.shortest_distance = []
         blinky.tileToMove = []
         blinky.futureMovementNumber = []
