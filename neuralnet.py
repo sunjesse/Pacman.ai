@@ -11,6 +11,7 @@ class Neural():
         self.weights_layer_3 = np.array([])#Randomize
 
         self.fitness = 0
+        self.peak_fitness = 0
 
     def relu(self, x):
         return x * (x>0)

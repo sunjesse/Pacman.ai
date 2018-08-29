@@ -33,7 +33,11 @@ clock = pygame.time.Clock()
 gameOver = False
 
 iteration = 1
-#networks = genetic.populate(1, 27, 20, 20, 4) #generation one
+networks = genetic.populate(50, 35, 26, 26, 4) #generation one
+best_nets = []
+
+minimum_peak_fitness = 10000000
+index_of_minimum = None
 
 def changeGameState():
     global gameOver
@@ -54,9 +58,11 @@ def reset():
     constants.chaseMode = True
 
 def game(game_state):
-    #global networks
+    global networks
 
     constants.score = 0
+    constants.wall_collide_number = 0
+
     generateLevel.createLevel()
     pacmanMain = Pacman()
     blinky = Ghost()
@@ -75,7 +81,7 @@ def game(game_state):
     time = 0
     scatterModeCount = 0
 
-    networks = genetic.populate(1, 35, 26, 26, 4) #1 neural net, 5 input nodes, 4 hidden nodes
+    #networks = genetic.populate(1, 35, 26, 26, 4) #1 neural net, 5 input nodes, 4 hidden nodes
 
     while not game_state:
 
@@ -88,8 +94,8 @@ def game(game_state):
                 if event.key == pygame.K_q:
                     changeGameState()
                     '''#FITNESS: update fitness - terminate the episode ---'''
-                    networks[0].fitness -= 500
-                    print("Final fitness: "  + str(networks[0].fitness))
+                    networks[i].fitness -= 500
+                    print("Final fitness: "  + str(networks[i].fitness))
                     game_state = True #Set fitness to very negative number like -1000
 
         score_before_script = constants.score
@@ -103,11 +109,14 @@ def game(game_state):
         label = font.render("Score: " + str(constants.score), 1, (255, 255, 255))
         constants.screen.blit(label, (constants.display_width * 0.02, constants.display_height * 0.9))
 
-        label2 = font.render("Fitness: " + str(networks[0].fitness), 1, (255, 255, 255))
+        label2 = font.render("Fitness: " + str(networks[i].fitness), 1, (255, 255, 255))
         constants.screen.blit(label2, (constants.display_width * 0.02, constants.display_height * 0.85))
 
-        label2 = font.render("Generation: 1  Iteration: " + str(iteration), 1, (255, 255, 255))
-        constants.screen.blit(label2, (constants.display_width * 0.02, constants.display_height * 0.01))
+        label4 = font.render("Peak Fitness: " + str(networks[i].peak_fitness), 1, (255, 255, 255))
+        constants.screen.blit(label4, (constants.display_width * 0.02, constants.display_height * 0.80))
+
+        label3 = font.render("Generation: 1  Iteration: " + str(iteration), 1, (255, 255, 255))
+        constants.screen.blit(label3, (constants.display_width * 0.02, constants.display_height * 0.01))
 
         pacmanMain.checkCollision()
         blinky.checkCollision()
@@ -164,14 +173,16 @@ def game(game_state):
                 constants.score += 5
 
                 '''#FITNESS: update fitness - for eating ghost'''
-                networks[0].fitness += 200
-                print(networks[0].fitness)
+                networks[i].fitness += 200
+                if networks[i].fitness > networks[i].peak_fitness:
+                    networks[i].peak_fitness = networks[i].fitness
+                print(networks[i].fitness)
 
             else: #lose the game
                 changeGameState()
                 '''#FITNESS: update fitness - losing the game'''
-                networks[0].fitness -= 500
-                print("Final fitness: "  + str(networks[0].fitness))
+                networks[i].fitness -= 500
+                print("Final fitness: "  + str(networks[i].fitness))
                 game_state = True
 
         if featureExtraction.on_current_tile((blinky.rect.x, blinky.rect.y), blinky) != blinkyCurrentTile: #blinky change tile
@@ -192,9 +203,9 @@ def game(game_state):
 
         inputVector = featureExtraction.extract(food_pos, enemy_pos, wall_pos, food_pos_2, enemy_pos_2, wall_pos_2, closest_food, distance_between, constants.frightenMode)
 
-        pacmanMain.automate(networks[0].process(inputVector))
-        #print(networks[0].process(inputVector))
-        #print(networks[0].show(inputVector))
+        pacmanMain.automate(networks[i].process(inputVector))
+        #print(networks[i].process(inputVector))
+        #print(networks[i].show(inputVector))
 
         ''' ---- #FITNESS: Update fitness of network ---- '''
         score_after_script = constants.score
@@ -202,24 +213,28 @@ def game(game_state):
 
         if not game_state: #don't update score if game is over, -12 every second
             if time % 5 == 0: #time penalty
-                networks[0].fitness -= 1
-                #print(networks[0].fitness)
+                networks[i].fitness -= 1
+                #print(networks[i].fitness)
 
             if score_after_script - score_before_script == 1: #reward for eating a food/coin
-                networks[0].fitness += 10
-                #print(networks[0].fitness)
+                networks[i].fitness += 10
+                if networks[i].fitness > networks[i].peak_fitness:
+                    networks[i].peak_fitness = networks[i].fitness
+                #print(networks[i].fitness)
             if wall_collide_number_after_script - wall_collide_number_before_script > 0: #penalty for hitting wall
-                networks[0].fitness -= 1
+                networks[i].fitness -= 1
 
             if len(generateLevel.coinsObjects) == 0: #if pacman wins the game
-                networks[0].fitness += 500
-                #print(networks[0].fitness)
+                networks[i].fitness += 500
+                if networks[i].fitness > networks[i].peak_fitness:
+                    networks[i].peak_fitness = networks[i].fitness
+                #print(networks[i].fitness)
 
-            if networks[0].fitness <= -50: #move to next network
+            if networks[i].fitness <= -50: #move to next network
                     changeGameState()
                     '''#FITNESS: update fitness - terminate the episode ---'''
-                    #networks[0].fitness -= 500
-                    print("Final fitness: "  + str(networks[0].fitness))
+                    #networks[i].fitness -= 500
+                    print("Final fitness: "  + str(networks[i].fitness))
                     game_state = True #Set fitness to very negative number like -1000
 
         ''' ---- End update fitness of network ---- '''
@@ -231,6 +246,39 @@ def game(game_state):
         pygame.display.update()
         clock.tick(60)
 
+for i in range(len(networks)):
+    #print(i)
+    game(gameOver)
+    if gameOver == True:
+        if len(best_nets) < 12:
+            best_nets.append((networks[i])) #append tuple (network, network's peak fitness)
+            if networks[i].peak_fitness < minimum_peak_fitness:
+                minimum_peak_fitness = networks[i].peak_fitness
+                index_of_minimum = best_nets.index(networks[i])
+            print(index_of_minimum)
+        else:
+            if networks[i].peak_fitness > minimum_peak_fitness:
+                best_nets[index_of_minimum] = networks[i]
+
+                new_peak_min = 10000000
+                new_index = 0
+
+                iteration_counter = 0
+                for net in best_nets: #find the new minimum peak fitness value in the list
+                    if net.peak_fitness < new_peak_min:
+                        new_peak_min = net.peak_fitness
+                        new_index = iteration_counter
+                    iteration_counter += 1
+                    print(net.peak_fitness)
+                minimum_peak_fitness = new_peak_min
+                index_of_minimum = new_index
+        print("Min: "  + str(minimum_peak_fitness))
+        print(len(best_nets))
+        gameOver = False
+        iteration += 1
+        reset()
+        continue
+'''
 game(gameOver)
 while gameOver == True:
     gameOver = False
@@ -241,11 +289,31 @@ while gameOver == True:
 pygame.quit()
 quit()
 
-'''
 for i in range(len(networks)):
     print(i)
-    game(gameOver, i)
+    game(gameOver)
     if gameOver == True:
+        if len(best_nets) <= 12:
+            best_nets.append((networks[0])) #append tuple (network, network's peak fitness)
+            if networks[0].peak_fitness < minimum_peak_fitness:
+                minimum_peak_fitness = networks[0].minimum_peak_fitness
+                index_of_minimum = best_nets.index(networks[0])
+        else:
+            if networks[0].peak_fitness > minimum_peak_fitness:
+                best_nets[index_of_minimum] = networks[0]
+
+                new_peak_min = networks[0].peak_fitness #don't change this networks[0], we want to start from the start of the list and find the new minimum
+                new_index = None
+
+                iteration_counter = 0
+                for i in best_nets:
+                    if i.peak_fitness < new_peak_min:
+                        new_peak_min = i.peak_fitness
+                        new_index = iteration_counter
+                    iteration_counter += 1
+
+                minimum_peak_fitness = new_peak_min
+                index_of_minimum = new_index
         gameOver = False
         continue
 '''
