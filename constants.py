@@ -18,3 +18,5 @@ score = 0
 frightenMode = False
 chaseMode = True
 scatterMode = False
+
+wall_collide_number = 0

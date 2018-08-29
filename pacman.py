@@ -22,7 +22,7 @@ import geneticAlgorithm as genetic
 pygame.init()
 pygame.font.init()
 
-font = pygame.font.SysFont('arial', 100)
+font = pygame.font.SysFont('arial', 50)
 
 black = constants.black
 
@@ -87,9 +87,13 @@ def game(game_state):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     changeGameState()
+                    '''#FITNESS: update fitness - terminate the episode ---'''
+                    networks[0].fitness -= 500
+                    print("Final fitness: "  + str(networks[0].fitness))
                     game_state = True #Set fitness to very negative number like -1000
 
         score_before_script = constants.score
+        wall_collide_number_before_script = constants.wall_collide_number
 
         constants.screen.fill(black)
 
@@ -99,8 +103,11 @@ def game(game_state):
         label = font.render("Score: " + str(constants.score), 1, (255, 255, 255))
         constants.screen.blit(label, (constants.display_width * 0.02, constants.display_height * 0.9))
 
-        #label2 = font.render("Generation: 1 Iteration:" + str(iteration), 1, (255, 255, 255))
-        #constants.screen.blit(label2, (constants.display_width * 0.02, constants.display_height * 0.8))
+        label2 = font.render("Fitness: " + str(networks[0].fitness), 1, (255, 255, 255))
+        constants.screen.blit(label2, (constants.display_width * 0.02, constants.display_height * 0.85))
+
+        label2 = font.render("Generation: 1  Iteration: " + str(iteration), 1, (255, 255, 255))
+        constants.screen.blit(label2, (constants.display_width * 0.02, constants.display_height * 0.01))
 
         pacmanMain.checkCollision()
         blinky.checkCollision()
@@ -191,18 +198,30 @@ def game(game_state):
 
         ''' ---- #FITNESS: Update fitness of network ---- '''
         score_after_script = constants.score
-        if not game_state: #don't update score if game is over
+        wall_collide_number_after_script = constants.wall_collide_number
+
+        if not game_state: #don't update score if game is over, -12 every second
             if time % 5 == 0: #time penalty
                 networks[0].fitness -= 1
-                print(networks[0].fitness)
+                #print(networks[0].fitness)
 
             if score_after_script - score_before_script == 1: #reward for eating a food/coin
                 networks[0].fitness += 10
-                print(networks[0].fitness)
+                #print(networks[0].fitness)
+            if wall_collide_number_after_script - wall_collide_number_before_script > 0: #penalty for hitting wall
+                networks[0].fitness -= 1
 
             if len(generateLevel.coinsObjects) == 0: #if pacman wins the game
                 networks[0].fitness += 500
-                print(networks[0].fitness)
+                #print(networks[0].fitness)
+
+            if networks[0].fitness <= -50: #move to next network
+                    changeGameState()
+                    '''#FITNESS: update fitness - terminate the episode ---'''
+                    #networks[0].fitness -= 500
+                    print("Final fitness: "  + str(networks[0].fitness))
+                    game_state = True #Set fitness to very negative number like -1000
+
         ''' ---- End update fitness of network ---- '''
 
         blinky.shortest_distance = []
