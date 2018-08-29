@@ -289,31 +289,4 @@ while gameOver == True:
 pygame.quit()
 quit()
 
-for i in range(len(networks)):
-    print(i)
-    game(gameOver)
-    if gameOver == True:
-        if len(best_nets) <= 12:
-            best_nets.append((networks[0])) #append tuple (network, network's peak fitness)
-            if networks[0].peak_fitness < minimum_peak_fitness:
-                minimum_peak_fitness = networks[0].minimum_peak_fitness
-                index_of_minimum = best_nets.index(networks[0])
-        else:
-            if networks[0].peak_fitness > minimum_peak_fitness:
-                best_nets[index_of_minimum] = networks[0]
-
-                new_peak_min = networks[0].peak_fitness #don't change this networks[0], we want to start from the start of the list and find the new minimum
-                new_index = None
-
-                iteration_counter = 0
-                for i in best_nets:
-                    if i.peak_fitness < new_peak_min:
-                        new_peak_min = i.peak_fitness
-                        new_index = iteration_counter
-                    iteration_counter += 1
-
-                minimum_peak_fitness = new_peak_min
-                index_of_minimum = new_index
-        gameOver = False
-        continue
 '''
