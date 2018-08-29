@@ -107,12 +107,11 @@ def crossover(num_of_children, net_one, net_two):
 
     return new_nets
 
-
 def evolve(population, new_population_size): #population is list of best networks. New_population_size = 5000
 
     new_generation = []
 
-    while len(new_generation) < int(new_population_size):
+    while len(new_generation) < int(new_population_size*0.8): #80% crossovered
 
         index_one = random.randint(0, len(population)-1)
         index_two = random.randint(0, len(population)-1)
@@ -124,13 +123,16 @@ def evolve(population, new_population_size): #population is list of best network
             num = int(new_population_size * random.uniform(0.05, 0.25))
             children = crossover(num, net_one, net_two)
 
-            for i in children:
-                if len(new_generation) < int(new_population_size):
-                    new_generation.append(i)
-                else:
-                    break
+            if num + len(new_generation) >= int(new_population_size*0.8):
+                for i in children:
+                    if len(new_generation) < int(new_population_size*0.8):
+                        new_generation.append(i)
+                    else:
+                        break
+            else:
+                new_generation.extend(children)
 
-    new_generation.extend(populate(new_population_size-len(new_generation), 35, 26, 26, 4))
+    new_generation.extend(populate(new_population_size-len(new_generation), 35, 26, 26, 4)) #20% random
 
     return new_generation
 
