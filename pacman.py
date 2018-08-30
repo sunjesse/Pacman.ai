@@ -17,6 +17,7 @@ import dynamicPositions
 import random
 import featureExtraction
 import geneticAlgorithm as genetic
+import shelve
 
 pygame.init()
 pygame.font.init()
@@ -29,16 +30,18 @@ pygame.display.set_caption("Pacman")
 
 clock = pygame.time.Clock()
 
-gameOver = False
-generation = 1
-'''
-iteration = 1
-networks = []
-best_nets = []
+#load training data
+filename='shelve'
+shelf = shelve.open(filename)
+try:
+    current_gen = shelf["current_generation"]
+finally:
+    shelf.close()
 
-minimum_peak_fitness = 10000000
-index_of_minimum = None
-'''
+gameOver = False
+generation = current_gen #loaded from shelve.out
+
+#Functions
 def changeGameState():
     global gameOver
     if gameOver == True:
@@ -254,8 +257,17 @@ def game(game_state):
         clock.tick(60)
 
 training = True
-best_nets = []
 
+shelf = shelve.open(filename)
+if shelf["current_generation"] == 1:
+    best_nets = []
+else:
+    best_nets = shelf[str(generation-1)]
+
+print(shelf["current_generation"])
+shelf.close()
+
+#print(best_nets)
 while training:
     #generate a Generation
     iteration = 1
@@ -264,9 +276,9 @@ while training:
     index_of_minimum = None
 
     if generation == 1:
-        networks = genetic.populate(100, 35, 26, 26, 4)
+        networks = genetic.populate(1000, 35, 26, 26, 4)
     else:
-        networks = genetic.evolve(best_nets, 100)
+        networks = genetic.evolve(best_nets, 1000)
         best_nets = []
         print(len(networks))
 
@@ -303,12 +315,12 @@ while training:
             reset()
             continue
 
-    max = 0
-    best = None
-    for i in best_nets:
-        if i.peak_fitness > max:
-            max = i.peak_fitness
-            best = i
+    #max = 0
+    #best = None
+    #for i in best_nets:
+    #    if i.peak_fitness > max:
+    #        max = i.peak_fitness
+    #        best = i
 
     #print("    1   ")
     #print(best.weights_layer_1)
@@ -323,9 +335,15 @@ while training:
     if stop_training == "Y":
         training = False
 
-    else:
-        generation += 1 #move to next generation
+    generation += 1 #move to next generation
 
+
+    shelf = shelve.open(filename)
+    try:
+        shelf["current_generation"] = generation #stores what generation we are on
+        shelf[str(generation-1)] = best_nets #stores the best networks of the previous generation
+    finally:
+        shelf.close()
 
 
 ''' ---OLD CODE USED TO RUN ONE ITERATION---

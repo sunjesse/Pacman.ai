@@ -44,7 +44,7 @@ def mutate(net): #Usage: replace old network with new mutated network when assig
     mutated_network = net
 
     #layers = [net.weights_layer_1, net.weights_layer_2]
-    end = random.randint(len(nets.weights_layer_1), 6*len(nets.weights_layer_1))
+    end = random.randint(len(net.weights_layer_1), 6*len(net.weights_layer_1))
 
     for i in range(1, end):
         x = random.randint(0, 100)
