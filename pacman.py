@@ -18,7 +18,6 @@ import random
 import featureExtraction
 import geneticAlgorithm as genetic
 
-
 pygame.init()
 pygame.font.init()
 
@@ -31,14 +30,15 @@ pygame.display.set_caption("Pacman")
 clock = pygame.time.Clock()
 
 gameOver = False
-
+generation = 1
+'''
 iteration = 1
-networks = genetic.populate(50, 35, 26, 26, 4) #generation one
+networks = []
 best_nets = []
 
 minimum_peak_fitness = 10000000
 index_of_minimum = None
-
+'''
 def changeGameState():
     global gameOver
     if gameOver == True:
@@ -57,8 +57,15 @@ def reset():
     constants.scatterMode = False
     constants.chaseMode = True
 
+def generate_generation(generation):
+    if generation == 1:
+        networks = genetic.populate(5, 35, 26, 26, 4)
+    else:
+        networks = genetic.evolve(best_nets, 5)
+
 def game(game_state):
     global networks
+    global generation
 
     constants.score = 0
     constants.wall_collide_number = 0
@@ -115,7 +122,7 @@ def game(game_state):
         label4 = font.render("Peak Fitness: " + str(networks[i].peak_fitness), 1, (255, 255, 255))
         constants.screen.blit(label4, (constants.display_width * 0.02, constants.display_height * 0.80))
 
-        label3 = font.render("Generation: 1  Iteration: " + str(iteration), 1, (255, 255, 255))
+        label3 = font.render("Generation: " + str(generation) + "  Iteration: " + str(iteration), 1, (255, 255, 255))
         constants.screen.blit(label3, (constants.display_width * 0.02, constants.display_height * 0.01))
 
         pacmanMain.checkCollision()
@@ -246,39 +253,82 @@ def game(game_state):
         pygame.display.update()
         clock.tick(60)
 
-for i in range(len(networks)):
-    #print(i)
-    game(gameOver)
-    if gameOver == True:
-        if len(best_nets) < 12:
-            best_nets.append((networks[i])) #append tuple (network, network's peak fitness)
-            if networks[i].peak_fitness < minimum_peak_fitness:
-                minimum_peak_fitness = networks[i].peak_fitness
-                index_of_minimum = best_nets.index(networks[i])
-            print(index_of_minimum)
-        else:
-            if networks[i].peak_fitness > minimum_peak_fitness:
-                best_nets[index_of_minimum] = networks[i]
+training = True
+best_nets = []
 
-                new_peak_min = 10000000
-                new_index = 0
+while training:
+    #generate a Generation
+    iteration = 1
 
-                iteration_counter = 0
-                for net in best_nets: #find the new minimum peak fitness value in the list
-                    if net.peak_fitness < new_peak_min:
-                        new_peak_min = net.peak_fitness
-                        new_index = iteration_counter
-                    iteration_counter += 1
-                    print(net.peak_fitness)
-                minimum_peak_fitness = new_peak_min
-                index_of_minimum = new_index
-        print("Min: "  + str(minimum_peak_fitness))
-        print(len(best_nets))
-        gameOver = False
-        iteration += 1
-        reset()
-        continue
-'''
+    minimum_peak_fitness = 10000000
+    index_of_minimum = None
+
+    if generation == 1:
+        networks = genetic.populate(100, 35, 26, 26, 4)
+    else:
+        networks = genetic.evolve(best_nets, 100)
+        best_nets = []
+        print(len(networks))
+
+    for i in range(len(networks)): #goes through a generation
+        #print(i)
+        game(gameOver)
+        if gameOver == True:
+            if len(best_nets) < 12:
+                best_nets.append((networks[i])) #append tuple (network, network's peak fitness)
+                if networks[i].peak_fitness < minimum_peak_fitness:
+                    minimum_peak_fitness = networks[i].peak_fitness
+                    index_of_minimum = best_nets.index(networks[i])
+                #print(index_of_minimum)
+            else:
+                if networks[i].peak_fitness > minimum_peak_fitness:
+                    best_nets[index_of_minimum] = networks[i]
+
+                    new_peak_min = 10000000
+                    new_index = 0
+
+                    iteration_counter = 0
+                    for net in best_nets: #find the new minimum peak fitness value in the list
+                        if net.peak_fitness < new_peak_min:
+                            new_peak_min = net.peak_fitness
+                            new_index = iteration_counter
+                        iteration_counter += 1
+                        #print(net.peak_fitness)
+                    minimum_peak_fitness = new_peak_min
+                    index_of_minimum = new_index
+            print("Min: "  + str(minimum_peak_fitness))
+            #print(len(best_nets))
+            gameOver = False
+            iteration += 1
+            reset()
+            continue
+
+    max = 0
+    best = None
+    for i in best_nets:
+        if i.peak_fitness > max:
+            max = i.peak_fitness
+            best = i
+
+    #print("    1   ")
+    #print(best.weights_layer_1)
+    #print("    2   ")
+    #print(best.weights_layer_2)
+    #print("    3   ")
+    #print(best.weights_layer_3)
+
+
+    stop_training = input("Stop training (Y/N): ") #ask if training should be paused/stopped after each generation
+
+    if stop_training == "Y":
+        training = False
+
+    else:
+        generation += 1 #move to next generation
+
+
+
+''' ---OLD CODE USED TO RUN ONE ITERATION---
 game(gameOver)
 while gameOver == True:
     gameOver = False

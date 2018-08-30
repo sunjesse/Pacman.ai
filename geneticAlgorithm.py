@@ -44,8 +44,9 @@ def mutate(net): #Usage: replace old network with new mutated network when assig
     mutated_network = net
 
     #layers = [net.weights_layer_1, net.weights_layer_2]
+    end = random.randint(len(nets.weights_layer_1), 6*len(nets.weights_layer_1))
 
-    for i in range(1, len(net.weights_layer_1)):
+    for i in range(1, end):
         x = random.randint(0, 100)
         if x <= 33: #mutate a weight in first layer
             mutated_network.weights_layer_1[random.randint(0, neuron_two-1)][random.randint(0, neuron_one-1)] = random.uniform(-1, 1)
@@ -100,7 +101,7 @@ def crossover(num_of_children, net_one, net_two):
                         row.append(net_two.weights_layer_3[j][i])
                 child.weights_layer_3 = np.vstack((child.weights_layer_3, row))
 
-            if random.randint(1, 100) <= 20: #20% chance of mutation
+            if random.randint(1, 100) <= 40: #20% chance of mutation
                 child = mutate(child)
 
             new_nets.append(child)
@@ -109,7 +110,7 @@ def crossover(num_of_children, net_one, net_two):
 
 def evolve(population, new_population_size): #population is list of best networks. New_population_size = 5000
 
-    new_generation = []
+    new_generation = [] #final length is equal to new_population_size + len(population)
 
     while len(new_generation) < int(new_population_size*0.8): #80% crossovered
 
@@ -133,6 +134,8 @@ def evolve(population, new_population_size): #population is list of best network
                 new_generation.extend(children)
 
     new_generation.extend(populate(new_population_size-len(new_generation), 35, 26, 26, 4)) #20% random
+
+    new_generation.extend(population) #add best nets from previous generation to new generation
 
     return new_generation
 
