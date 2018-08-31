@@ -276,11 +276,11 @@ while training:
     index_of_minimum = None
 
     if generation == 1:
-        networks = genetic.populate(1000, 35, 26, 26, 4)
+        networks = genetic.populate(1500, 35, 26, 26, 4)
     else:
-        networks = genetic.evolve(best_nets, 1000)
+        networks = genetic.evolve(best_nets, 1500)
         best_nets = []
-        print(len(networks))
+        #print(len(networks))
 
     for i in range(len(networks)): #goes through a generation
         #print(i)
@@ -342,6 +342,7 @@ while training:
     try:
         shelf["current_generation"] = generation #stores what generation we are on
         shelf[str(generation-1)] = best_nets #stores the best networks of the previous generation
+        print("Successfully saved generation " + str(generation-1) + "'s best networks!'")
     finally:
         shelf.close()
 
