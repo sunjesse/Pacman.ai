@@ -121,7 +121,7 @@ def evolve(population, new_population_size): #population is list of best network
             net_one = population[index_one]
             net_two = population[index_two]
 
-            num = int(new_population_size * random.uniform(0.05, 0.25))
+            num = int(new_population_size * random.uniform(0.04, 0.08))
             children = crossover(num, net_one, net_two)
 
             if num + len(new_generation) >= int(new_population_size*0.8):

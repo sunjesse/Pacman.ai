@@ -105,7 +105,7 @@ def game(game_state):
                     changeGameState()
                     '''#FITNESS: update fitness - terminate the episode ---'''
                     networks[i].fitness -= 500
-                    print("Final fitness: "  + str(networks[i].fitness))
+                    #print("Final fitness: "  + str(networks[i].fitness))
                     game_state = True #Set fitness to very negative number like -1000
 
         score_before_script = constants.score
@@ -192,7 +192,7 @@ def game(game_state):
                 changeGameState()
                 '''#FITNESS: update fitness - losing the game'''
                 networks[i].fitness -= 500
-                print("Final fitness: "  + str(networks[i].fitness))
+                #print("Final fitness: "  + str(networks[i].fitness))
                 game_state = True
 
         if featureExtraction.on_current_tile((blinky.rect.x, blinky.rect.y), blinky) != blinkyCurrentTile: #blinky change tile
@@ -244,7 +244,7 @@ def game(game_state):
                     changeGameState()
                     '''#FITNESS: update fitness - terminate the episode ---'''
                     #networks[i].fitness -= 500
-                    print("Final fitness: "  + str(networks[i].fitness))
+                    #print("Final fitness: "  + str(networks[i].fitness))
                     game_state = True #Set fitness to very negative number like -1000
 
         ''' ---- End update fitness of network ---- '''
@@ -286,7 +286,7 @@ while training:
         #print(i)
         game(gameOver)
         if gameOver == True:
-            if len(best_nets) < 12:
+            if len(best_nets) < 10:
                 best_nets.append((networks[i])) #append tuple (network, network's peak fitness)
                 if networks[i].peak_fitness < minimum_peak_fitness:
                     minimum_peak_fitness = networks[i].peak_fitness
@@ -295,7 +295,6 @@ while training:
             else:
                 if networks[i].peak_fitness > minimum_peak_fitness:
                     best_nets[index_of_minimum] = networks[i]
-
                     new_peak_min = 10000000
                     new_index = 0
 
@@ -305,7 +304,7 @@ while training:
                             new_peak_min = net.peak_fitness
                             new_index = iteration_counter
                         iteration_counter += 1
-                        #print(net.peak_fitness)
+                        print(net.peak_fitness)
                     minimum_peak_fitness = new_peak_min
                     index_of_minimum = new_index
             print("Min: "  + str(minimum_peak_fitness))
@@ -337,6 +336,9 @@ while training:
 
     generation += 1 #move to next generation
 
+    for net in best_nets: #reset the fitness of the nets that will be used in the next generation.
+        net.fitness = 0
+        net.peak_fitness = 0
 
     shelf = shelve.open(filename)
     try:
@@ -345,7 +347,6 @@ while training:
         print("Successfully saved generation " + str(generation-1) + "'s best networks!'")
     finally:
         shelf.close()
-
 
 ''' ---OLD CODE USED TO RUN ONE ITERATION---
 game(gameOver)
