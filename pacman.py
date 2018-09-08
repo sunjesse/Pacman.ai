@@ -313,21 +313,21 @@ while training:
             iteration += 1
             reset()
             continue
+    '''
+    max = 0
+    best = None
+    for i in best_nets:
+        if i.peak_fitness > max:
+            max = i.peak_fitness
+            best = i
 
-    #max = 0
-    #best = None
-    #for i in best_nets:
-    #    if i.peak_fitness > max:
-    #        max = i.peak_fitness
-    #        best = i
-
-    #print("    1   ")
-    #print(best.weights_layer_1)
-    #print("    2   ")
-    #print(best.weights_layer_2)
-    #print("    3   ")
-    #print(best.weights_layer_3)
-
+    print("    1   ")
+    print(best.weights_layer_1)
+    print("    2   ")
+    print(best.weights_layer_2)
+    print("    3   ")
+    print(best.weights_layer_3)
+    '''
 
     stop_training = input("Stop training (Y/N): ") #ask if training should be paused/stopped after each generation
 
