@@ -1,6 +1,6 @@
 import shelve
 
-filename='shelve'
+filename='database.db'
 shelf = shelve.open(filename)
 try:
     shelf["current_generation"] = 1

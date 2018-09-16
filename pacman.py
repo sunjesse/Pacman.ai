@@ -31,7 +31,7 @@ pygame.display.set_caption("Pacman")
 clock = pygame.time.Clock()
 
 #load training data
-filename='shelve'
+filename='database.db'
 shelf = shelve.open(filename)
 try:
     current_gen = shelf["current_generation"]
@@ -194,6 +194,8 @@ def game(game_state):
                 networks[i].fitness -= 500
                 #print("Final fitness: "  + str(networks[i].fitness))
                 game_state = True
+                pacmanMain.kill()
+                blinky.kill()
 
         if featureExtraction.on_current_tile((blinky.rect.x, blinky.rect.y), blinky) != blinkyCurrentTile: #blinky change tile
             blinkyCurrentTile = featureExtraction.on_current_tile((blinky.rect.x, blinky.rect.y), blinky)
@@ -246,6 +248,8 @@ def game(game_state):
                     #networks[i].fitness -= 500
                     #print("Final fitness: "  + str(networks[i].fitness))
                     game_state = True #Set fitness to very negative number like -1000
+                    pacmanMain.kill()
+                    blinky.kill()
 
         ''' ---- End update fitness of network ---- '''
 
@@ -328,12 +332,6 @@ while training:
     print("    3   ")
     print(best.weights_layer_3)
     '''
-
-    stop_training = input("Stop training (Y/N): ") #ask if training should be paused/stopped after each generation
-
-    if stop_training == "Y":
-        training = False
-
     generation += 1 #move to next generation
 
     for net in best_nets: #reset the fitness of the nets that will be used in the next generation.
