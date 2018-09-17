@@ -31,7 +31,8 @@ pygame.display.set_caption("Pacman")
 clock = pygame.time.Clock()
 
 #load training data
-filename='database.db'
+#filename='database.db'
+filename = ''
 shelf = shelve.open(filename)
 try:
     current_gen = shelf["current_generation"]
@@ -210,10 +211,10 @@ def game(game_state):
         wall_pos = featureExtraction.check_tile(generateLevel.wallPositions, pacmanCurrentTile, 1, "wall", blinkyCurrentTile)
         food_pos_2 = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 2, "food", blinkyCurrentTile)
         enemy_pos_2 = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 2, "ghost", blinkyCurrentTile)
-        wall_pos_2 = featureExtraction.check_tile(generateLevel.wallPositions, pacmanCurrentTile, 2, "wall", blinkyCurrentTile)
+        #wall_pos_2 = featureExtraction.check_tile(generateLevel.wallPositions, pacmanCurrentTile, 2, "wall", blinkyCurrentTile)
         distance_between = featureExtraction.distance_between((pacmanMain.rect.x, pacmanMain.rect.y), (blinky.rect.x, blinky.rect.y))
 
-        inputVector = featureExtraction.extract(food_pos, enemy_pos, wall_pos, food_pos_2, enemy_pos_2, wall_pos_2, closest_food, distance_between, constants.frightenMode)
+        inputVector = featureExtraction.extract(food_pos, enemy_pos, wall_pos, food_pos_2, enemy_pos_2, closest_food, distance_between, constants.frightenMode)
 
         pacmanMain.automate(networks[i].process(inputVector))
         #print(networks[i].process(inputVector))
@@ -280,9 +281,9 @@ while training:
     index_of_minimum = None
 
     if generation == 1:
-        networks = genetic.populate(1500, 35, 26, 26, 4)
+        networks = genetic.populate(1000, 35, 26, 26, 4)
     else:
-        networks = genetic.evolve(best_nets, 1500)
+        networks = genetic.evolve(best_nets, 1000)
         best_nets = []
         #print(len(networks))
 
@@ -317,21 +318,7 @@ while training:
             iteration += 1
             reset()
             continue
-    '''
-    max = 0
-    best = None
-    for i in best_nets:
-        if i.peak_fitness > max:
-            max = i.peak_fitness
-            best = i
 
-    print("    1   ")
-    print(best.weights_layer_1)
-    print("    2   ")
-    print(best.weights_layer_2)
-    print("    3   ")
-    print(best.weights_layer_3)
-    '''
     generation += 1 #move to next generation
 
     for net in best_nets: #reset the fitness of the nets that will be used in the next generation.
