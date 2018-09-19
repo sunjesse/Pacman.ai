@@ -31,8 +31,8 @@ pygame.display.set_caption("Pacman")
 clock = pygame.time.Clock()
 
 #load training data
-#filename='database.db'
-filename = ''
+filename='database.db'
+#filename = ''
 shelf = shelve.open(filename)
 try:
     current_gen = shelf["current_generation"]
