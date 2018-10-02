@@ -3,7 +3,6 @@ To Do:
 1. Implement pseudorandom selection of networks in population and add it to list in the compute() function.
 '''
 import math
-import numpy
 import random
 
 class SimulatedAnnealing():
@@ -22,4 +21,4 @@ class SimulatedAnnealing():
 
 
     def calculate_probability(fit1, fit2):
-        return exp(-((fit2 - fit1)/self.temp))
+        return math.exp(-((fit2 - fit1)/self.temp))
