@@ -340,7 +340,7 @@ while training:
     try:
         shelf["current_generation"] = generation #stores what generation we are on
         shelf[str(generation-1)] = best_nets #stores the best networks of the previous generation
-        shelf[str(generation-1) + " randomized"] = annealing.compute(random_nets, best_nets, 1);
+        shelf[str(generation-1) + " randomized"] = annealing.compute(random_nets, best_nets, 1) '''don't know if this works!!!!'''
         print("Successfully saved generation " + str(generation-1) + "'s best networks!'")
     finally:
         shelf.close()
