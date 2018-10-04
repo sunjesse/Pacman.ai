@@ -44,7 +44,7 @@ def mutate(net): #Usage: replace old network with new mutated network when assig
     mutated_network = net
 
     #layers = [net.weights_layer_1, net.weights_layer_2]
-    end = random.randint(len(net.weights_layer_1), 6*len(net.weights_layer_1))
+    end = random.randint(len(net.weights_layer_1)*len(net.weights_layer_1)/10, len(net.weights_layer_1)*len(net.weights_layer_1)
 
     for i in range(1, end):
         x = random.randint(0, 100)
@@ -101,7 +101,7 @@ def crossover(num_of_children, net_one, net_two):
                         row.append(net_two.weights_layer_3[j][i])
                 child.weights_layer_3 = np.vstack((child.weights_layer_3, row))
 
-            if random.randint(1, 100) <= 20: #20% chance of mutation
+            if random.randint(1, 100) <= 40: #40% chance of mutation
                 child = mutate(child)
 
             new_nets.append(child)
@@ -112,7 +112,7 @@ def evolve(population, new_population_size): #population is list of best network
 
     new_generation = [] #final length is equal to new_population_size + len(population)
 
-    while len(new_generation) < int(new_population_size*0.7): #80% crossovered
+    while len(new_generation) < int(new_population_size*0.6): #60% crossovered
 
         index_one = random.randint(0, len(population)-1)
         index_two = random.randint(0, len(population)-1)
@@ -124,16 +124,16 @@ def evolve(population, new_population_size): #population is list of best network
             num = int(new_population_size * random.uniform(0.04, 0.08))
             children = crossover(num, net_one, net_two)
 
-            if num + len(new_generation) >= int(new_population_size*0.7):
+            if num + len(new_generation) >= int(new_population_size*0.6):
                 for i in children:
-                    if len(new_generation) < int(new_population_size*0.7):
+                    if len(new_generation) < int(new_population_size*0.6):
                         new_generation.append(i)
                     else:
                         break
             else:
                 new_generation.extend(children)
 
-    new_generation.extend(populate(new_population_size-len(new_generation), 35, 26, 26, 4)) #20% random
+    new_generation.extend(populate(new_population_size-len(new_generation), 35, 26, 26, 4)) #40% random
 
     new_generation.extend(population) #add best nets from previous generation to new generation
 

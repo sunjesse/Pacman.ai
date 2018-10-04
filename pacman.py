@@ -3,14 +3,14 @@ pacman.py
 
 Main File
 '''
-
+from wall import Wall
+from ghost import Ghost
+from player import Pacman
+from simulatedannealing import SimulatedAnnealing
 import pygame
 import sys
-from player import Pacman
 import player
-from ghost import Ghost
 import constants
-from wall import Wall
 import levels
 import generateLevel
 import dynamicPositions
