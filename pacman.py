@@ -272,7 +272,8 @@ else:
 print(shelf["current_generation"])
 shelf.close()
 
-#print(best_nets)
+random_nets = []
+
 while training:
     #generate a Generation
     iteration = 1
@@ -285,11 +286,13 @@ while training:
     else:
         networks = genetic.evolve(best_nets, 1000)
         best_nets = []
+
         #print(len(networks))
 
     for i in range(len(networks)): #goes through a generation
         #print(i)
         game(gameOver)
+
         if gameOver == True:
             if len(best_nets) < 10:
                 best_nets.append((networks[i])) #append tuple (network, network's peak fitness)
@@ -297,6 +300,7 @@ while training:
                     minimum_peak_fitness = networks[i].peak_fitness
                     index_of_minimum = best_nets.index(networks[i])
                 #print(index_of_minimum)
+
             else:
                 if networks[i].peak_fitness > minimum_peak_fitness:
                     best_nets[index_of_minimum] = networks[i]
@@ -312,6 +316,11 @@ while training:
                         print(net.peak_fitness)
                     minimum_peak_fitness = new_peak_min
                     index_of_minimum = new_index
+
+            #randomly adds networks so they have a chance of being selected onto next generation.
+            if random.randint(1, 100) == 1:
+                random_nets.append(network[i])
+
             print("Min: "  + str(minimum_peak_fitness))
             #print(len(best_nets))
             gameOver = False
@@ -321,6 +330,8 @@ while training:
 
     generation += 1 #move to next generation
 
+    annealing = SimulatedAnnealing()
+
     for net in best_nets: #reset the fitness of the nets that will be used in the next generation.
         net.fitness = 0
         net.peak_fitness = 0
@@ -329,9 +340,12 @@ while training:
     try:
         shelf["current_generation"] = generation #stores what generation we are on
         shelf[str(generation-1)] = best_nets #stores the best networks of the previous generation
+        shelf[str(generation-1) + " randomized"] = annealing.compute(random_nets, best_nets, 1);
         print("Successfully saved generation " + str(generation-1) + "'s best networks!'")
     finally:
         shelf.close()
+
+    random_nets = []
 
 ''' ---OLD CODE USED TO RUN ONE ITERATION---
 game(gameOver)

@@ -13,11 +13,13 @@ class SimulatedAnnealing():
 
     def compute(list, best_networks, temperature): #list is a subset of networks in the population that pseudorandomly have been selected.
         self.temp = temperature
+        returnList = best_networks
         for net in list:
             for best_nets in best_networks:
                 if net.fitness < best_nets.fitness:
                     if random.uniform(0, 1) <= calculate_probability(best_nets.fitness, net.fitness):
-                        best_networks[best_networks.index(best_nets)]
+                        returnList.append(net)
+        return returnList
 
 
     def calculate_probability(fit1, fit2):
