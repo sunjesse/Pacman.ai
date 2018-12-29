@@ -1,0 +1,55 @@
+'''
+O = empty tile, usually used for spawn point of ghosts.
+W = wall
+'''
+
+level = [
+"WWWWWWWWWWWWWWWWWWWW",
+"W                  W",
+"W         WWWWWW   W",
+"W   WWWW       W   W",
+"W   W        WWWW  W",
+"W WWW  WWWW        W",
+"W   W              W",
+"W   W         W W  W",
+"W   WWW WWW   W W  W",
+"W     W   W   W W  W",
+"WWW   W   WWWWW W  W",
+"W         W        W",
+"W  W  WWWWW   WWW  W",
+"W  W  W        W   W",
+"WWWWWWWWWWWWWWWWWWWW",
+]
+
+level4 = [
+"WWWWWWWWWWWWWWWWWWWW",
+"WIIIIIIWOOOOWIIIIIIW",
+"WIIIIIIWOOOOWIIIIIIW",
+"WIWWIIIWWOOWWIIIWWIW",
+"WIWIIIIIIIIIIIIIIWIW",
+"WIWIIWIIIIIIIIWIIWIW",
+"WIWWIWIWWWWWWIWIWWIW",
+"WIIIIIIIIIIIIIIIIIIW",
+"WWWWWWWWWWWWWWWWWWWW",
+]
+
+level1 = [
+"WWWWWWWWWWWWWWWWWWWW",
+"WIIIIIIWOOOOWIIIIIIW",
+"WIIIIIIWOOOOWIIIIIIW",
+"W WWIIIWWOOWWIIIWW W",
+"WFWIIWIIIIIIIIWIIWFW",
+"W WIIWIIIIIIIIWIIW W",
+"W WW W WWWWWW W WW W",
+"WI  I I      I I  IW",
+"WWWWWWWWWWWWWWWWWWWW",
+]
+
+#Not done
+level3 = [
+"WWWWWWWWWWWWWWWWWWW",
+"WI  I   IWI   I  IW",
+"W WW WWW W WWW WW W",
+"WI  I I I I I I  IW",
+"W "
+]
