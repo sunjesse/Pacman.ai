@@ -3,6 +3,11 @@ import random
 import numpy as np
 import replay_buffer
 
+'''
+TO DO:
+1. Create a file that stores data during training: q-values, loss, etc..
+'''
+
 ''' ---- Training ---- '''
 replay_buffer_size = 10000
 q_network = Neural()
