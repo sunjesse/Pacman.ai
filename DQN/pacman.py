@@ -3,7 +3,6 @@ pacman.py
 
 Main File
 '''
-from wall import Wall
 from ghost import Ghost
 from player import Pacman
 from neuralnet import Neural
@@ -105,9 +104,6 @@ def game(game_state, q_net):
         label4 = font.render("Peak Fitness: " + str(q_net.peak_fitness), 1, (255, 255, 255))
         constants.screen.blit(label4, (constants.display_width * 0.02, constants.display_height * 0.80))
 
-        label3 = font.render("Generation: " + str(generation) + "  Iteration: " + str(iteration), 1, (255, 255, 255))
-        constants.screen.blit(label3, (constants.display_width * 0.02, constants.display_height * 0.01))
-
         pacmanMain.checkCollision()
         blinky.checkCollision()
         pacmanMain.update()
@@ -190,7 +186,6 @@ def game(game_state, q_net):
         wall_pos = featureExtraction.check_tile(generateLevel.wallPositions, pacmanCurrentTile, 1, "wall", blinkyCurrentTile)
         food_pos_2 = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 2, "food", blinkyCurrentTile)
         enemy_pos_2 = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 2, "ghost", blinkyCurrentTile)
-        #wall_pos_2 = featureExtraction.check_tile(generateLevel.wallPositions, pacmanCurrentTile, 2, "wall", blinkyCurrentTile)
         distance_between = featureExtraction.distance_between((pacmanMain.rect.x, pacmanMain.rect.y), (blinky.rect.x, blinky.rect.y))
 
         inputVector = featureExtraction.extract(food_pos, enemy_pos, wall_pos, food_pos_2, enemy_pos_2, closest_food, distance_between, constants.frightenMode)
@@ -198,7 +193,6 @@ def game(game_state, q_net):
         pacmanMain.automate(q_net.process(inputVector))
         #print(q_net.process(inputVector))
         #print(q_net.show(inputVector))
-
         ''' ---- #FITNESS: Update fitness of network ---- '''
         score_after_script = constants.score
         wall_collide_number_after_script = constants.wall_collide_number
@@ -239,3 +233,14 @@ def game(game_state, q_net):
 
         pygame.display.update()
         clock.tick(60)
+'''
+x = Neural()
+game(gameOver, x)
+while gameOver == True:
+    gameOver = False
+    reset()
+    game(gameOver, x)
+
+pygame.quit()
+quit()
+'''

@@ -9,7 +9,7 @@ import pygame
 import levels
 from wall import Wall
 import constants
-import player
+#import player
 
 walls = []
 wallPositions = [] #in terms of tile positions
@@ -44,8 +44,8 @@ def createLevel():
         y += 60
         x = 60
 
-    player.coins = coinsObjects
-    player.coinPos = coins
+#    player.coins = coinsObjects
+#    player.coinPos = coins
 
 def drawWalls():
     for wall in walls:

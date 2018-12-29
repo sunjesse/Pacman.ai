@@ -22,6 +22,8 @@ class Neural():
         self.fitness = 0
         self.peak_fitness = 0
 
+        self.alpha = 1
+
     def relu(self, x):
         return x * (x>0)
 
@@ -71,12 +73,12 @@ class Neural():
 
     def calculate_mse(self, target_out, y):
         return (1/self.output)*np.sum(np.multiply(y-target_out, y-target_out))
-        
+
     def backpropagate(self, target_out, y):
-        delta_four = np.dot((y - target_out), self.drelu(self.stateLayerFour)) #self.stateLayerFour == np.dot(self.weights_layer_3, self.activationThree)
+        delta_four = np.dot(y-target_out, self.drelu(self.stateLayerFour)) #self.stateLayerFour == np.dot(self.weights_layer_3, self.activationThree)
         delta_three = np.multiply(np.dot(self.weights_layer_3, delta_four), self.drelu(np.dot(self.weights_layer_2, self.activationTwo)))
         delta_two = np.multiply(np.dot(self.weights_layer_2, delta_three), self.drelu(np.dot(self.weights_layer_1, self.input_layer)))
 
-        self.weights_layer_1 += np.dot(self.input_layer, delta_two)
-        self.weights_layer_2 += np.dot(self.activationTwo, delta_three)
-        self.weights_layer_3 += np.dot(self.activationThree, delta_four)
+        self.weights_layer_1 += self.alpha*np.dot(self.input_layer, delta_two)
+        self.weights_layer_2 += self.alpha*np.dot(self.activationTwo, delta_three)
+        self.weights_layer_3 += self.alpha*np.dot(self.activationThree, delta_four)
