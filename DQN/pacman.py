@@ -239,12 +239,3 @@ def game(game_state, q_net):
 
         pygame.display.update()
         clock.tick(60)
-
-
-''' ---- DQN  ---- '''
-replay_buffer_size = 10000
-q_network = Neural()
-q_network.init_weights(31, 23, 23, 4) ''' !!! CHECK OVER NUMBER OF FEATURE DIMENSIONS !!!'''
-epislon = 1
-
-while(True):
