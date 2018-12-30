@@ -72,7 +72,8 @@ class Neural():
             self.weights_layer_3 = np.vstack((self.weights_layer_3, row))
 
     def calculate_mse(self, target_out, y):
-        return (1/self.output)*np.sum(np.multiply(y-target_out, y-target_out))
+        return (1/self.output)*np.dot((y-target_out).T, (y-target_out))
+        #return (1/self.output)*np.sum(np.multiply(y-target_out, y-target_out))
 
     def backpropagate(self, target_out, y):
         delta_four = np.dot(y-target_out, self.drelu(self.stateLayerFour)) #self.stateLayerFour == np.dot(self.weights_layer_3, self.activationThree)
