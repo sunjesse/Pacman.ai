@@ -6,6 +6,7 @@ import replay_buffer
 '''
 TO DO:
 1. Create a file that stores data during training: q-values, loss, etc..
+2. Seperate file that saves the current networks, current replay buffer, etc.
 '''
 
 ''' ---- Training ---- '''
