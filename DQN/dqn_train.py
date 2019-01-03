@@ -1,7 +1,7 @@
 import pacman
 import random
 import numpy as np
-import replay_buffer
+import replay_buffer as rb
 
 '''
 TO DO:
@@ -21,4 +21,7 @@ training = True
 time_step = 0
 
 while(training):
-    pacman.game(run, target_network)
+    pacman.game(run, target_network) #Inside this function, do sampling of experiences to put in buffer. Also calculate TD error and put in a parallel deque.
+
+    #Sample from replay buffer
+    if time_step % 50 == 0:

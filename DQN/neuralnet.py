@@ -83,3 +83,6 @@ class Neural():
         self.weights_layer_1 += self.alpha*np.dot(self.input_layer, delta_two)
         self.weights_layer_2 += self.alpha*np.dot(self.activationTwo, delta_three)
         self.weights_layer_3 += self.alpha*np.dot(self.activationThree, delta_four)
+
+    def backpropagate_per(self, target_out, y, beta):
+        
