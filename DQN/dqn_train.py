@@ -30,7 +30,7 @@ while(training):
         if time_step % 50 == 0:
             e = random.uniform(0, 1)
             i = 0
-            if e > sample_epsilon: #greedy sample
+            if e > sample_epsilon: #sample stochastically rather than greedily.
                 i = random.randint(0, replay_buffer_size)
             #calculate target q(s,a)
             q_t = target_network.process(rb.replay_buffer[i][0])
