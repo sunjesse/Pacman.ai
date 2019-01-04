@@ -5,8 +5,13 @@ import replay_buffer as rb
 
 '''
 TO DO:
-1. Create a file that stores data during training: q-values, loss, etc..
-2. Seperate file that saves the current networks, current replay buffer, etc.
+1. Add sampling from pacman.game() in pacman.py into buffer
+2. Add backprop after every forward pass into pacman.game() in pacman.py
+3. Clearly define a reward system.
+4. Sampling from replay_buffer should theoretically occur in pacman.game(), might have to transfer it over along ith time_step variable. Will increment it in pacman.game()
+5. Create a file that stores data during training: q-values, loss, etc..
+6. Seperate file that saves the current networks, current replay buffer, etc.
+7. Matplotlib // Maybe run a process displaying the data concurrently during training? Maybe idk.
 '''
 
 ''' ---- Training ---- '''
