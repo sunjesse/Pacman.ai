@@ -33,4 +33,3 @@ def calculate_probability(alpha): #use after replay_buffer is sorted according t
 
     for i in range(len(replay_buffer)):
         P[i] = (P[i]**alpha)/sigma_p
-        
