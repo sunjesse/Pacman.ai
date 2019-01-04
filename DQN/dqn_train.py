@@ -39,8 +39,8 @@ while(training):
             if e > sample_epsilon: #sample stochastically rather than greedily.
                 i = random.randint(0, replay_buffer_size)
             #calculate target q(s,a)
-            q_t = target_network.process(rb.replay_buffer[i][0])
-            q_t_plus_1 = target_network.process(rb.replay_buffer[i][3])
+            q_t = target_network.forward(rb.replay_buffer[i][0])
+            q_t_plus_1 = target_network.forward(rb.replay_buffer[i][3])
             t_index = q_t_plus_1.index(q_t_plus_1)
             q_value_target = rb.replay_buffer[i][2] + gamma*max(q_t_plus_1)
             for x in range(4):
