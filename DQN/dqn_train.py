@@ -5,13 +5,13 @@ import constants
 
 '''
 TO DO:
-1. Add sampling from pacman.game() in pacman.py into buffer (!!!!)
-2. Add backprop after every forward pass into pacman.game() in pacman.py
-3. Clearly define a reward system.
-5. Try and except inside this file -> if game is closed via cmd+c or whatever, then save current progress.
-6. Create a file that stores data during training: q-values, loss, etc..
-7. Seperate file that saves the current networks, current replay buffer, etc.
-8. Matplotlib // Maybe run a process displaying the data concurrently during training? Maybe idk.
+1. Clearly define a reward system.
+2. Add sampling from pacman.game() in pacman.py into buffer (!!!!)
+3. Add backprop after every forward pass into pacman.game() in pacman.py
+4. Try and except inside this file -> if game is closed via cmd+c or whatever, then save current progress.
+5. Create a file that stores data during training: q-values, loss, etc..
+6. Seperate file that saves the current networks, current replay buffer, etc.
+7. Matplotlib // Maybe run a process displaying the data concurrently during training? Maybe idk.
 '''
 
 ''' ---- Training ---- '''
