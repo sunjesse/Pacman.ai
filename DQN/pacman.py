@@ -50,6 +50,9 @@ def reset():
     constants.chaseMode = True
 
 def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
+
+    reward = 0
+
     constants.score = 0
     constants.wall_collide_number = 0
 
@@ -82,10 +85,7 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     changeGameState()
-                    '''#FITNESS: update fitness - terminate the episode ---'''
-                    q_net.fitness -= 500
-                    #print("Final fitness: "  + str(q_net.fitness))
-                    game_state = True #Set fitness to very negative number like -1000
+                    game_state = True
 
         score_before_script = constants.score
         wall_collide_number_before_script = constants.wall_collide_number
@@ -159,16 +159,12 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
                 constants.score += 5
 
                 '''#FITNESS: update fitness - for eating ghost'''
-                q_net.fitness += 200
-                if q_net.fitness > q_net.peak_fitness:
-                    q_net.peak_fitness = q_net.fitness
-                print(q_net.fitness)
+                reward += 50
 
             else: #lose the game
                 changeGameState()
                 '''#FITNESS: update fitness - losing the game'''
-                q_net.fitness -= 500
-                #print("Final fitness: "  + str(q_net.fitness))
+                reward -= 100
                 game_state = True
                 pacmanMain.kill()
                 blinky.kill()
@@ -190,8 +186,13 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
         distance_between = featureExtraction.distance_between((pacmanMain.rect.x, pacmanMain.rect.y), (blinky.rect.x, blinky.rect.y))
 
         inputVector = featureExtraction.extract(food_pos, enemy_pos, wall_pos, food_pos_2, enemy_pos_2, closest_food, distance_between, constants.frightenMode)
+        action = q_net.process(inputVector)
 
-        pacmanMain.automate(q_net.process(inputVector))
+        if constants.added_previous_t:
+            rb.replay_buffer[count - 1].append(action)
+            constants.added_previous_t = False
+
+        pacmanMain.automate(action)
         #print(q_net.process(inputVector))
         #print(q_net.show(inputVector))
         ''' ---- #FITNESS: Update fitness of network ---- '''
@@ -199,34 +200,21 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
         wall_collide_number_after_script = constants.wall_collide_number
 
         if not game_state: #don't update score if game is over, -12 every second
-            if time % 5 == 0: #time penalty
-                q_net.fitness -= 1
-                #print(q_net.fitness)
-
+            #if time % 5 == 0: #time penalty
+            #    q_net.fitness -= 1
             if score_after_script - score_before_script == 1: #reward for eating a food/coin
-                q_net.fitness += 10
-                if q_net.fitness > q_net.peak_fitness:
-                    q_net.peak_fitness = q_net.fitness
-                #print(q_net.fitness)
-            if wall_collide_number_after_script - wall_collide_number_before_script > 0: #penalty for hitting wall
-                q_net.fitness -= 1
+                reward += 10
 
-            if len(generateLevel.coinsObjects) == 0: #if pacman wins the game
-                q_net.fitness += 500
-                if q_net.fitness > q_net.peak_fitness:
-                    q_net.peak_fitness = q_net.fitness
-                #print(q_net.fitness)
 
-            if q_net.fitness <= -50: #move to next network
-                    changeGameState()
-                    '''#FITNESS: update fitness - terminate the episode ---'''
-                    #q_net.fitness -= 500
-                    #print("Final fitness: "  + str(q_net.fitness))
-                    game_state = True #Set fitness to very negative number like -1000
-                    pacmanMain.kill()
-                    blinky.kill()
+        ''' ---- Saving memory into experience buffer ---- '''
 
-        ''' ---- End update fitness of network ---- '''
+        p = random.uniform(0, 1)
+        if p < 0.02:  #~2 percent probability of remembering the current state.
+            rb.replay_buffer.append([inputVector, action, reward])
+            rb.count += 1
+            constants.added_previous_t = True
+
+        ''' ---- End of saving memory into experience buffer ---- '''
 
         blinky.shortest_distance = []
         blinky.tileToMove = []

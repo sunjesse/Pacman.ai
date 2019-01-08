@@ -5,6 +5,7 @@ replay_buffer = collections.deque([])
 td_error = collections.deque([])
 P = collections.deque([])
 
+count = 0
 def pop_experience(index):
     global replay_buffer
     global td_error

@@ -23,6 +23,7 @@ scatterMode = False
 wall_collide_number = 0
 
 t = 0
+added_previous_t = False
 
 q_network = Neural()
 q_network.init_weights(31, 23, 23, 4)
