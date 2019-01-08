@@ -5,12 +5,12 @@ import constants
 
 '''
 TO DO:
-2. Fix respawn of Pacman. (Today)
-3. Add backprop after every forward pass into pacman.game() in pacman.py (Today)
-4. Try and except inside this file -> if game is closed via cmd+c or whatever, then save current progress.
-5. Create a file that stores data during training: q-values, loss, etc..
-6. Seperate file that saves the current networks, current replay buffer, etc.
-7. Matplotlib // Maybe run a process displaying the data concurrently during training? Maybe idk.
+1. Random epsilon changing directions. (Today)
+2. Add backprop after every forward pass into pacman.game() in pacman.py (Today)
+3. Try and except inside this file -> if game is closed via cmd+c or whatever, then save current progress.
+4. Create a file that stores data during training: q-values, loss, etc..
+5. Seperate file that saves the current networks, current replay buffer, etc.
+6. Matplotlib // Maybe run a process displaying the data concurrently during training? Maybe idk.
 '''
 
 ''' ---- Training ---- '''

@@ -28,3 +28,5 @@ added_previous_t = False
 q_network = Neural()
 q_network.init_weights(31, 23, 23, 4)
 target_network = q_network
+
+closest_food = None

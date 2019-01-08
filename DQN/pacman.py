@@ -64,8 +64,7 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
     #initialize some feature variables
     pacmanCurrentTile = featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)
     blinkyCurrentTile = featureExtraction.on_current_tile((blinky.rect.x, blinky.rect.y), blinky)
-    closest_food = featureExtraction.bfs([featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], [featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], 0, generateLevel.coins)
-
+    #closest_food = featureExtraction.bfs([featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], [featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], 0, generateLevel.coins)
 
     crashCount = 1
 
@@ -79,11 +78,13 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                constants.added_previous_t = False
                 changeGameState()
                 game_state = True
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
+                    constants.added_previous_t = False
                     changeGameState()
                     game_state = True
 
@@ -97,12 +98,6 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
 
         label = font.render("Score: " + str(constants.score), 1, (255, 255, 255))
         constants.screen.blit(label, (constants.display_width * 0.02, constants.display_height * 0.9))
-
-        label2 = font.render("Fitness: " + str(q_net.fitness), 1, (255, 255, 255))
-        constants.screen.blit(label2, (constants.display_width * 0.02, constants.display_height * 0.85))
-
-        label4 = font.render("Peak Fitness: " + str(q_net.peak_fitness), 1, (255, 255, 255))
-        constants.screen.blit(label4, (constants.display_width * 0.02, constants.display_height * 0.80))
 
         pacmanMain.checkCollision()
         blinky.checkCollision()
@@ -159,24 +154,25 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
                 constants.score += 5
 
                 '''#FITNESS: update fitness - for eating ghost'''
-                reward += 50
+                reward += 10
 
             else: #lose the game
                 changeGameState()
                 '''#FITNESS: update fitness - losing the game'''
-                reward -= 100
+                reward -= 10
+                constants.added_previous_t = False
                 game_state = True
                 pacmanMain.kill()
                 blinky.kill()
+                break
 
         if featureExtraction.on_current_tile((blinky.rect.x, blinky.rect.y), blinky) != blinkyCurrentTile: #blinky change tile
             blinkyCurrentTile = featureExtraction.on_current_tile((blinky.rect.x, blinky.rect.y), blinky)
 
-        if featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain) != pacmanCurrentTile: #only do bfs when pacman changes tiles
+        if featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain) != pacmanCurrentTile or constants.closest_food == None: #only do bfs when pacman changes tiles
             pacmanCurrentTile = featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)
-            closest_food = featureExtraction.bfs([featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], [featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], 0, generateLevel.coins)
-        if closest_food == None:
-            closest_food = -1
+            constants.closest_food = featureExtraction.bfs([featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], [featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], 0, generateLevel.coins)
+
         #features
         food_pos = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 1, "food", blinkyCurrentTile)
         enemy_pos = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 1, "ghost", blinkyCurrentTile)
@@ -185,25 +181,23 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
         enemy_pos_2 = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 2, "ghost", blinkyCurrentTile)
         distance_between = featureExtraction.distance_between((pacmanMain.rect.x, pacmanMain.rect.y), (blinky.rect.x, blinky.rect.y))
 
-        inputVector = featureExtraction.extract(food_pos, enemy_pos, wall_pos, food_pos_2, enemy_pos_2, closest_food, distance_between, constants.frightenMode)
+        inputVector = featureExtraction.extract(food_pos, enemy_pos, wall_pos, food_pos_2, enemy_pos_2, constants.closest_food, distance_between, constants.frightenMode)
         action = q_net.process(inputVector)
 
         if constants.added_previous_t:
-            rb.replay_buffer[count - 1].append(action)
+            rb.replay_buffer[rb.count-1].append(action)
             constants.added_previous_t = False
 
-        pacmanMain.automate(action)
+        #pacmanMain.automate(action)
         #print(q_net.process(inputVector))
         #print(q_net.show(inputVector))
         ''' ---- #FITNESS: Update fitness of network ---- '''
         score_after_script = constants.score
         wall_collide_number_after_script = constants.wall_collide_number
 
-        if not game_state: #don't update score if game is over, -12 every second
-            #if time % 5 == 0: #time penalty
-            #    q_net.fitness -= 1
+        if not game_state: #don't update score if game is over
             if score_after_script - score_before_script == 1: #reward for eating a food/coin
-                reward += 10
+                reward += 1
 
 
         ''' ---- Saving memory into experience buffer ---- '''
@@ -250,8 +244,7 @@ game(gameOver, constants.target_network, 0.9, 0.8, 1000)
 while gameOver == True:
     gameOver = False
     reset()
-    constants.target_network.fitness = 0
-    constants.target_network.peak_fitness = 0
+    print("restart")
     game(gameOver, constants.target_network, 0.9, 0.8, 1000)
 
 pygame.quit()
