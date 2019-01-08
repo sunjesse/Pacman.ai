@@ -3,6 +3,7 @@ constants.py
 '''
 #CONSTANTS
 import pygame
+from neuralnet import Neural
 
 #dimensions
 display_width = 1920
@@ -20,3 +21,9 @@ chaseMode = True
 scatterMode = False
 
 wall_collide_number = 0
+
+t = 0
+
+q_network = Neural()
+q_network.init_weights(31, 23, 23, 4)
+target_network = q_network

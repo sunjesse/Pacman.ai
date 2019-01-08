@@ -16,7 +16,7 @@ import dynamicPositions
 import random
 import featureExtraction
 import shelve
-import replay_buffer
+import replay_buffer as rb
 
 pygame.init()
 pygame.font.init()
@@ -49,7 +49,7 @@ def reset():
     constants.scatterMode = False
     constants.chaseMode = True
 
-def game(game_state, q_net):
+def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
     constants.score = 0
     constants.wall_collide_number = 0
 
@@ -179,7 +179,8 @@ def game(game_state, q_net):
         if featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain) != pacmanCurrentTile: #only do bfs when pacman changes tiles
             pacmanCurrentTile = featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)
             closest_food = featureExtraction.bfs([featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], [featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], 0, generateLevel.coins)
-
+        if closest_food == None:
+            closest_food = -1
         #features
         food_pos = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 1, "food", blinkyCurrentTile)
         enemy_pos = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 1, "ghost", blinkyCurrentTile)
@@ -231,16 +232,39 @@ def game(game_state, q_net):
         blinky.tileToMove = []
         blinky.futureMovementNumber = []
 
+        constants.t += 1 #increment a time-step
+        #Sample from replay buffer every 100 timesteps
+        if constants.t % 100 == 0:
+            if len(rb.replay_buffer) == replay_buffer_size:
+                if time_step % 50 == 0:
+                    e = random.uniform(0, 1)
+                    i = 0
+                    if e > sample_epsilon: #sample stochastically rather than greedily.
+                        i = random.randint(0, replay_buffer_size)
+                    #calculate target q(s,a)
+                    q_t = constants.constants.target_network.forward(rb.replay_buffer[i][0])
+                    q_t_plus_1 = constants.target_network.forward(rb.replay_buffer[i][3])
+                    t_index = q_t_plus_1.index(q_t_plus_1)
+                    q_value_target = rb.replay_buffer[i][2] + gamma*max(q_t_plus_1)
+                    for x in range(4):
+                        if x == t_index:
+                            q_t_plus_1[x] = q_value_target
+                        else:
+                            q_t_plus_1[x] = q_t[x]
+                    constants.q_network.backpropagate(q_t_plus_1, q_t)
+                    rb.pop_experience(i)
+            constants.t = 0
+
         pygame.display.update()
         clock.tick(60)
-'''
-x = Neural()
-game(gameOver, x)
+
+game(gameOver, constants.target_network, 0.9, 0.8, 1000)
 while gameOver == True:
     gameOver = False
     reset()
-    game(gameOver, x)
+    constants.target_network.fitness = 0
+    constants.target_network.peak_fitness = 0
+    game(gameOver, constants.target_network, 0.9, 0.8, 1000)
 
 pygame.quit()
 quit()
-'''

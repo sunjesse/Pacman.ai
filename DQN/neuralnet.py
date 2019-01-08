@@ -35,7 +35,7 @@ class Neural():
         self.activationTwo = self.relu(np.dot(self.weights_layer_1, self.input_layer))
         self.activationThree = self.relu(np.dot(self.weights_layer_2, self.activationTwo))
         self.stateLayerFour = np.dot(self.weights_layer_3, self.activationThree)
-        return list(output).index(np.amax(self.stateLayerFour))
+        return list(self.stateLayerFour).index(np.amax(self.stateLayerFour))
 
     def forward(self, input):
         self.input_layer = input
@@ -84,4 +84,4 @@ class Neural():
         self.weights_layer_2 += self.alpha*np.dot(self.activationTwo, delta_three)
         self.weights_layer_3 += self.alpha*np.dot(self.activationThree, delta_four)
 
-    def backpropagate_per(self, target_out, y, beta):
+    #def backpropagate_per(self, target_out, y, beta):
