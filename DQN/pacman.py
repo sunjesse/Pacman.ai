@@ -50,7 +50,6 @@ def reset():
     constants.chaseMode = True
 
 def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
-
     reward = 0
 
     constants.score = 0
@@ -182,13 +181,26 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
         distance_between = featureExtraction.distance_between((pacmanMain.rect.x, pacmanMain.rect.y), (blinky.rect.x, blinky.rect.y))
 
         inputVector = featureExtraction.extract(food_pos, enemy_pos, wall_pos, food_pos_2, enemy_pos_2, constants.closest_food, distance_between, constants.frightenMode)
-        action = q_net.process(inputVector)
+
+        if constants.randoming == False:
+            random_movement_epsilon = random.uniform(0, 1)
+
+            if random_movement_epsilon < 0.1:
+                action = random.randint(0, 3)
+                constants.movement = action
+            else:
+                action = q_net.process(inputVector)
+        else:
+            action = constants.movement
+            constants.random_movement_t += 1
+            if(constants.random_movement_t % 30):
+                constants.randoming = False
 
         if constants.added_previous_t:
             rb.replay_buffer[rb.count-1].append(action)
             constants.added_previous_t = False
 
-        #pacmanMain.automate(action)
+        pacmanMain.automate(action)
         #print(q_net.process(inputVector))
         #print(q_net.show(inputVector))
         ''' ---- #FITNESS: Update fitness of network ---- '''

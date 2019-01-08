@@ -11,8 +11,6 @@ display_width = constants.display_width
 display_height = constants.display_height
 walls = generateLevel.walls
 wallPositions = generateLevel.wallPositions
-coins = generateLevel.coinsObjects
-coinPos = generateLevel.coins
 
 class Pacman(pygame.sprite.Sprite):
     def __init__(self):
@@ -179,11 +177,11 @@ class Pacman(pygame.sprite.Sprite):
 
                 constants.wall_collide_number += 1
 
-        for coin in coins:
+        for coin in generateLevel.coinsObjects:
             if self.rect.colliderect(coin):
-                index = coins.index(coin)
-                coins.remove(coin) #remove object
-                if coinPos[index] in generateLevel.frightenTiles:
+                index = generateLevel.coinsObjects.index(coin)
+                generateLevel.coinsObjects.remove(coin)
+                if generateLevel.coins[index] in generateLevel.frightenTiles:
                     constants.frightenMode = True
-                coinPos.pop(index) #remove (x,y) position of coin
+                generateLevel.coins.pop(index)
                 constants.score += 1
