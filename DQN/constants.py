@@ -24,6 +24,7 @@ wall_collide_number = 0
 
 t = 0
 added_previous_t = False
+added_previous_t_two = False
 randoming = False
 movement = -1
 random_movement_t = 0

@@ -19,10 +19,7 @@ class Neural():
         self.layerThree = 0
         self.output = 0
 
-        self.fitness = 0
-        self.peak_fitness = 0
-
-        self.alpha = 1
+        self.alpha = 0.9
 
     def relu(self, x):
         return x * (x>0)
