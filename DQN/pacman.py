@@ -160,6 +160,7 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
                 reward -= 10
                 constants.added_previous_t = False
                 game_state = True
+                constants.scores.append(constants.score)
                 pacmanMain.kill()
                 blinky.kill()
                 break
@@ -171,7 +172,6 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
         if featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain) != pacmanCurrentTile or constants.closest_food == None:
             pacmanCurrentTile = featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)
             constants.closest_food = featureExtraction.bfs([featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], [featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], 0, generateLevel.coins)
-            print(constants.closest_food)
         #features
         food_pos = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 1, "food", blinkyCurrentTile)
         enemy_pos = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 1, "ghost", blinkyCurrentTile)
@@ -224,10 +224,12 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
                 rb.replay_buffer.append([inputVector, action, reward])
                 rb.count += 1
                 constants.added_previous_t = True
+                print("Added to replay_buffer. Transition count: "+ rb.count)
             else:
                 rb.replay_buffer_two.append([inputVector, action, reward])
                 rb.count_two += 1
                 constants.added_previous_t_two = True
+                print("Added to replay_buffer_two. Transition count: "+ rb.count_two)
 
 
         ''' ---- End of saving memory into experience buffer ---- '''
@@ -241,6 +243,7 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
         if constants.t % 100 == 0:
             if random.randint(0, 100) < 60: #sample from first replay buffer
                 if rb.count == replay_buffer_size:
+                    print("Sampling from replay buffer one.")
                 #if time_step % 50 == 0:
                     #e = random.uniform(0, 1)
                     i = random.randint(0, replay_buffer_size-1)
@@ -257,10 +260,12 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
                         else:
                             q_t_plus_1[x] = q_t[x]
                     constants.q_network.backpropagate(q_t_plus_1, q_t)
+                    print("Updated weights.")
                     rb.pop_experience(i, 1)
-                constants.t = 0
+
             else: #sample from second replay buffer
                 if rb.count_two == replay_buffer_size:
+                    print("Sampling from replay buffer two.")
                 #if time_step % 50 == 0:
                     #e = random.uniform(0, 1)
                     i = random.randint(0, replay_buffer_size-1)
@@ -277,12 +282,14 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
                         else:
                             q_t_plus_1[x] = q_t[x]
                     constants.q_network.backpropagate(q_t_plus_1, q_t)
+                    print("Updated weights.")
                     rb.pop_experience(i, 2)
 
         #Freeze interval of 100000 time steps, update the target_network with the weights of the q_network.
         if constants.t % 100000 == 0:
             constants.target_network = constants.q_network
-            t = 0
+            constants = 0
+            print("Target network is now up-to-date with Q network.")
 
         pygame.display.update()
         clock.tick(60)

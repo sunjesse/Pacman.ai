@@ -3,13 +3,13 @@ import pygame
 import random
 import numpy as np
 import constants
+import shelve
+import replay_buffer as rb
+import csv
 
 '''
 TO DO:
-3. Try and except inside this file -> if game is closed via cmd+c or whatever, then save current progress.
-4. Create a file that stores data during training: q-values, loss, etc..
-5. Seperate file that saves the current networks, current replay buffer, etc.
-6. Matplotlib // Maybe run a process displaying the data concurrently during training? Maybe idk.
+
 '''
 
 ''' ---- Training ---- '''
@@ -28,7 +28,28 @@ while(training):
         pacman.reset()
     except KeyboardInterrupt:
         print("Saving training data...")
-        #Save training data using shelf maybe.
+
+        shelf = shelve.open(constants.filename)
+        try:
+            shelf["q_network"] = constants.q_network
+            shelf["target_network"] = constants.target_network
+            shelf["replay_buffer"] = rb.replay_buffer
+            shelf["replay_buffer_two"] = rb.replay_buffer_two
+            shelf["P"] = rb.P
+            shelf["P_two"] = rb.P_two
+            print("Sucessfully saved objects and lists in " + constants.filename + ".db.")
+            #if shelf["first_time"]:
+            #    shelf["first_time"] = False
+        finally:
+            shelf.close()
+
+        try:
+            with open('training_data.csv', 'wb', newline = '') as f:
+                write = f.writer(f)
+                write.writerow(constants.scores)
+                print("Successfully saved training data in training_data.csv")
+        except:
+            print("An error occured while saving the training data.")
         break
 
 pygame.quit()

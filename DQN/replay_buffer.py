@@ -1,12 +1,26 @@
 import collections
-
+import shelve
+import constants
 ''' Stores transition tuples (s_t, a_t, r_t, s_t+1)'''
-replay_buffer = []
-replay_buffer_two = []
-#td_error = collections.deque([])
-P = []
-P_two = []
+filename= constants.filename
+shelf = shelve.open(filename)
 
+if shelf["first_time"]:
+    replay_buffer = []
+    replay_buffer_two = []
+    P = []
+    P_two = []
+    print("Successfully initialized the replay buffers.")
+
+else:
+    try:
+        replay_buffer = shelf["replay_buffer"]
+        replay_buffer_two = shelf["replay_buffer_two"]
+        P = shelf["P"]
+        P_two = shelf["P_two"]
+        print("Successfully recovered the replay buffers.")
+    finally:
+        shelf.close()
 count = 0
 count_two = 0
 
