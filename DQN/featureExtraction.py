@@ -36,7 +36,6 @@ def on_current_tile(position, player): #returns what tile (x,y) the agent is on
     return (player.rect.x, player.rect.y)
 
 def bfs(adjacent, visited, count, coins): #closest food algorithm
-    #global shortest_path
     adjacent_tiles = []
     coin_list = coins
     visited_tiles = visited

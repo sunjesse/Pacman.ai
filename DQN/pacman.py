@@ -168,10 +168,11 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
         if featureExtraction.on_current_tile((blinky.rect.x, blinky.rect.y), blinky) != blinkyCurrentTile: #blinky change tile
             blinkyCurrentTile = featureExtraction.on_current_tile((blinky.rect.x, blinky.rect.y), blinky)
 
-        if featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain) != pacmanCurrentTile or constants.closest_food == None: #only do bfs when pacman changes tiles
+        #only do bfs when pacman changes tiles
+        if featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain) != pacmanCurrentTile or constants.closest_food == None:
             pacmanCurrentTile = featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)
             constants.closest_food = featureExtraction.bfs([featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], [featureExtraction.on_current_tile(dynamicPositions.pacman, pacmanMain)], 0, generateLevel.coins)
-
+            print(constants.closest_food)
         #features
         food_pos = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 1, "food", blinkyCurrentTile)
         enemy_pos = featureExtraction.check_tile(generateLevel.coins, pacmanCurrentTile, 1, "ghost", blinkyCurrentTile)
@@ -251,7 +252,7 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
 
         pygame.display.update()
         clock.tick(60)
-
+'''
 game(gameOver, constants.target_network, 0.9, 0.8, 1000)
 while gameOver == True:
     gameOver = False
@@ -261,3 +262,4 @@ while gameOver == True:
 
 pygame.quit()
 quit()
+'''
