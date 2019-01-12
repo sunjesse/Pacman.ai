@@ -31,16 +31,16 @@ added_previous_t_two = False
 randoming = False
 movement = -1
 random_movement_t = 0
-closest_food = None
+closest_food = -1
 
-filename='objects'
-shelf = shelve.open(filename)
+shelf = shelve.open("objects")
 
 if shelf["first_time"]:
     q_network = Neural()
     q_network.init_weights(31, 23, 23, 4)
     target_network = q_network
     print("Successfully initiated networks.")
+    shelf.close()
 
 else:
     try:

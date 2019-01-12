@@ -2,42 +2,48 @@ import collections
 import shelve
 import constants
 ''' Stores transition tuples (s_t, a_t, r_t, s_t+1)'''
-filename= constants.filename
-shelf = shelve.open(filename)
+
+shelf = shelve.open("objects")
 
 if shelf["first_time"]:
     replay_buffer = []
     replay_buffer_two = []
-    P = []
-    P_two = []
+    #P = []
+    #P_two = []
+    count = 0
+    count_two = 0
     print("Successfully initialized the replay buffers.")
-
+    shelf.close()
 else:
     try:
+        print("Retrieving....")
         replay_buffer = shelf["replay_buffer"]
         replay_buffer_two = shelf["replay_buffer_two"]
-        P = shelf["P"]
-        P_two = shelf["P_two"]
+        #P = shelf["P"]
+        #P_two = shelf["P_two"]
+        count = shelf["count"]
+        count_two = shelf["count_two"]
         print("Successfully recovered the replay buffers.")
     finally:
         shelf.close()
-count = 0
-count_two = 0
 
 def pop_experience(index, buffer):
     global replay_buffer
     global replay_buffer_two
     #global td_error
     global P
+    global count
+    global count_two
+
     global P_two
 
     if buffer == 2:
         del(replay_buffer_two[index])
-        del(P_two[index])
+        #del(P_two[index])
 
     elif buffer == 1:
         del(replay_buffer[index])
-        del(P[index])
+        #del(P[index])
 
 #def sort_buffer():
     #global replay_buffer

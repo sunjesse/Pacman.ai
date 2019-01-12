@@ -19,27 +19,34 @@ class Neural():
         self.layerThree = 0
         self.output = 0
 
-        self.alpha = 0.9
+        self.alpha = 1
+
+    def sigmoid(self, x):
+        return 1/(1+np.exp(-x))
+
+    def d_sigmoid(self, x):
+        sig_x = self.sigmoid(x)
+        return sig_x*(1-sig_x)
 
     def relu(self, x):
         return x * (x>0)
 
-    def drelu(self, x):
+    def d_relu(self, x):
         return 1 * (x>0)
 
     def process(self, input):
-        self.input_layer = input
-        self.activationTwo = self.relu(np.dot(self.weights_layer_1, self.input_layer))
-        self.activationThree = self.relu(np.dot(self.weights_layer_2, self.activationTwo))
-        self.stateLayerFour = np.dot(self.weights_layer_3, self.activationThree)
+        self.input_layer = np.array(input).reshape([self.layerOne, 1])
+        self.activationTwo = self.sigmoid(np.dot(self.weights_layer_1, self.input_layer)).reshape([self.layerTwo, 1])
+        self.activationThree = self.sigmoid(np.dot(self.weights_layer_2, self.activationTwo)).reshape([self.layerThree, 1])
+        self.stateLayerFour = np.dot(self.weights_layer_3, self.activationThree).reshape([self.output, 1])
         return list(self.stateLayerFour).index(np.amax(self.stateLayerFour))
 
     def forward(self, input):
-        self.input_layer = input
-        self.activationTwo = self.relu(np.dot(self.weights_layer_1, self.input_layer))
-        self.activationThree = self.relu(np.dot(self.weights_layer_2, self.activationTwo))
-        self.stateLayerFour = np.dot(self.weights_layer_3, self.activationThree)
-        return self.stateLayerFour
+        self.input_layer = np.array(input).reshape([self.layerOne, 1])
+        self.activationTwo = self.sigmoid(np.dot(self.weights_layer_1, self.input_layer)).reshape([self.layerTwo, 1])
+        self.activationThree = self.sigmoid(np.dot(self.weights_layer_2, self.activationTwo)).reshape([self.layerThree, 1])
+        self.stateLayerFour = np.dot(self.weights_layer_3, self.activationThree).reshape([self.output, 1])
+        return list(self.stateLayerFour)
 
     def init_weights(self, layerOneNeurons, layerTwoNeurons, layerThreeNeurons, outputNeurons): #randomly initialize the weights of the neural network.
         self.layerOne = layerOneNeurons
@@ -69,16 +76,17 @@ class Neural():
             self.weights_layer_3 = np.vstack((self.weights_layer_3, row))
 
     def calculate_mse(self, target_out, y):
-        return (1/self.output)*np.dot((y-target_out).T, (y-target_out))
+        return (1/self.output)*np.dot((np.array(y)-np.array(target_out)).T, (np.array(y)-np.array(target_out)))
         #return (1/self.output)*np.sum(np.multiply(y-target_out, y-target_out))
 
     def backpropagate(self, target_out, y):
-        delta_four = np.dot(y-target_out, self.drelu(self.stateLayerFour)) #self.stateLayerFour == np.dot(self.weights_layer_3, self.activationThree)
-        delta_three = np.multiply(np.dot(self.weights_layer_3, delta_four), self.drelu(np.dot(self.weights_layer_2, self.activationTwo)))
-        delta_two = np.multiply(np.dot(self.weights_layer_2, delta_three), self.drelu(np.dot(self.weights_layer_1, self.input_layer)))
+        delta_four = (np.array(y)-np.array(target_out)) * self.d_sigmoid(self.stateLayerFour).reshape([self.output, 1]) #self.stateLayerFour == np.dot(self.weights_layer_3, self.activationThree)
+        delta_three = np.multiply(np.dot(self.weights_layer_3.T, delta_four), self.d_sigmoid(self.activationThree)).reshape([self.layerThree, 1])
+        delta_two = np.multiply(np.dot(self.weights_layer_2.T, delta_three), self.d_sigmoid(self.activationTwo)).reshape([self.layerTwo, 1])
 
-        self.weights_layer_1 += self.alpha*np.dot(self.input_layer, delta_two)
-        self.weights_layer_2 += self.alpha*np.dot(self.activationTwo, delta_three)
-        self.weights_layer_3 += self.alpha*np.dot(self.activationThree, delta_four)
-
-    #def backpropagate_per(self, target_out, y, beta):
+        self.weights_layer_1 -= self.alpha*np.dot(np.array(self.input_layer), delta_two.T).T
+        self.weights_layer_2 -= self.alpha*np.dot(self.activationTwo, delta_three.T).T
+        self.weights_layer_3 -= self.alpha*np.dot(self.activationThree, delta_four.T).T
+        print("Updated weights.")
+        #delta_four = (np.array(y) - np.array(target_out)) * self.d_relu(self.target_out)
+        #delta_three = np.dot(self.a)

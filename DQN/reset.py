@@ -1,16 +1,15 @@
 import shelve
 import csv
 
-filename='object'
-shelf = shelve.open(filename)
+shelf = shelve.open("objects")
 
 try:
     shelf["q_network"] = []
     shelf["target_network"] = []
     shelf["replay_buffer"] = []
     shelf["replay_buffer_two"] = []
-    shelf["P"] = []
-    shelf["P_two"] = []
+    shelf["count"] = 0
+    shelf["count_two"] = 0
 
 finally:
     print("Erased all objects.")

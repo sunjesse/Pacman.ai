@@ -15,8 +15,8 @@ import generateLevel
 import dynamicPositions
 import random
 import featureExtraction
-import shelve
 import replay_buffer as rb
+
 
 pygame.init()
 pygame.font.init()
@@ -50,7 +50,7 @@ def reset():
     constants.chaseMode = True
 
 def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
-    reward = 0
+    global constants
 
     constants.score = 0
     constants.wall_collide_number = 0
@@ -86,6 +86,7 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
                     changeGameState()
                     game_state = True
 
+        reward = 0
         score_before_script = constants.score
         wall_collide_number_before_script = constants.wall_collide_number
 
@@ -193,15 +194,16 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
         else:
             action = constants.movement
             constants.random_movement_t += 1
-            if(constants.random_movement_t % 30):
+            if(constants.random_movement_t % 60):
                 constants.randoming = False
 
-        #Adding action on time step "t+1" into the transition at time step t
+        #Adding state on time step "t+1" into the transition at time step t
         if constants.added_previous_t:
-            rb.replay_buffer[rb.count-1].append(action)
+            rb.replay_buffer[rb.count-1].append(inputVector)
+            #print(rb.replay_buffer[rb.count-1])
             constants.added_previous_t = False
         elif constants.added_previous_t_two:
-            rb.replay_buffer_two[rb.count_two-1].append(action)
+            rb.replay_buffer_two[rb.count_two-1].append(inputVector)
             constants.added_previous_t_two = False
 
         pacmanMain.automate(action)
@@ -218,18 +220,20 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
 
         ''' ---- Saving memory into experience buffer ---- '''
 
-        p = random.uniform(0, 1)
-        if p < 0.04:  #~4 percent probability of remembering the current state.
-            if(reward > 0):
+        if(reward > 0): #remember states where reward is earned
+            if rb.count<=replay_buffer_size:
                 rb.replay_buffer.append([inputVector, action, reward])
                 rb.count += 1
                 constants.added_previous_t = True
-                print("Added to replay_buffer. Transition count: "+ rb.count)
-            else:
+                print("Added to replay_buffer. Transition count: "+ str(rb.count))
+
+        p = random.uniform(0, 1)
+        if p < 0.04 and reward <= 0:  #~4 percent probability of remembering the current state.
+            if rb.count_two <= replay_buffer_size:
                 rb.replay_buffer_two.append([inputVector, action, reward])
                 rb.count_two += 1
                 constants.added_previous_t_two = True
-                print("Added to replay_buffer_two. Transition count: "+ rb.count_two)
+                print("Added to replay_buffer_two. Transition count: "+ str(rb.count_two))
 
 
         ''' ---- End of saving memory into experience buffer ---- '''
@@ -242,17 +246,17 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
         #Sample from replay buffer every 100 timesteps
         if constants.t % 100 == 0:
             if random.randint(0, 100) < 60: #sample from first replay buffer
-                if rb.count == replay_buffer_size:
+                if rb.count >= replay_buffer_size:
                     print("Sampling from replay buffer one.")
                 #if time_step % 50 == 0:
-                    #e = random.uniform(0, 1)
-                    i = random.randint(0, replay_buffer_size-1)
-                    #if e > sample_epsilon: #sample stochastically rather than greedily.
-                    #    i = random.randint(0, replay_buffer_size)
+                    e = random.uniform(0, 1)
+                    i = 0
+                    if e > sample_epsilon: #sample stochastically rather than greedily.
+                        i = random.randint(0, replay_buffer_size-1)
                     #calculate target q(s,a)
-                    q_t = constants.constants.target_network.forward(rb.replay_buffer[i][0])
+                    q_t = constants.target_network.forward(rb.replay_buffer[i][0])
                     q_t_plus_1 = constants.target_network.forward(rb.replay_buffer[i][3])
-                    t_index = q_t_plus_1.index(q_t_plus_1)
+                    t_index = list(q_t_plus_1).index(max(q_t_plus_1))
                     q_value_target = rb.replay_buffer[i][2] + gamma*max(q_t_plus_1)
                     for x in range(4):
                         if x == t_index:
@@ -261,20 +265,22 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
                             q_t_plus_1[x] = q_t[x]
                     constants.q_network.backpropagate(q_t_plus_1, q_t)
                     print("Updated weights.")
+                    rb.count -= 1
                     rb.pop_experience(i, 1)
 
             else: #sample from second replay buffer
-                if rb.count_two == replay_buffer_size:
+                if rb.count_two >= replay_buffer_size:
                     print("Sampling from replay buffer two.")
                 #if time_step % 50 == 0:
-                    #e = random.uniform(0, 1)
-                    i = random.randint(0, replay_buffer_size-1)
-                    #if e > sample_epsilon: #sample stochastically rather than greedily.
-                    #    i = random.randint(0, replay_buffer_size)
+                    e = random.uniform(0, 1)
+                    i = 0
+                    if e > sample_epsilon: #sample stochastically rather than greedily.
+                        i = random.randint(0, replay_buffer_size-1)
                     #calculate target q(s,a)
-                    q_t = constants.constants.target_network.forward(rb.replay_buffer_two[i][0])
+                    q_t = constants.target_network.forward(rb.replay_buffer_two[i][0])
                     q_t_plus_1 = constants.target_network.forward(rb.replay_buffer_two[i][3])
-                    t_index = q_t_plus_1.index(q_t_plus_1)
+                    print(q_t_plus_1)
+                    t_index = list(q_t_plus_1).index(max(q_t_plus_1))
                     q_value_target = rb.replay_buffer_two[i][2] + gamma*max(q_t_plus_1)
                     for x in range(4):
                         if x == t_index:
@@ -282,7 +288,7 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
                         else:
                             q_t_plus_1[x] = q_t[x]
                     constants.q_network.backpropagate(q_t_plus_1, q_t)
-                    print("Updated weights.")
+                    rb.count_two -= 1
                     rb.pop_experience(i, 2)
 
         #Freeze interval of 100000 time steps, update the target_network with the weights of the q_network.
