@@ -42,16 +42,18 @@ class Neural():
         sum = 0
         for i in array:
             sum += math.exp(i/self.temp)
-        for i in array:
-            i = (math.exp(i/self.temp))/sum
-        return array
+        soft = [i/sum for i in array]
+        return soft
 
     def process(self, input):
         self.input_layer = np.array(input).reshape([self.layerOne, 1])
         self.activationTwo = self.sigmoid(np.dot(self.weights_layer_1, self.input_layer)).reshape([self.layerTwo, 1])
         self.activationThree = self.sigmoid(np.dot(self.weights_layer_2, self.activationTwo)).reshape([self.layerThree, 1])
         self.stateLayerFour = np.dot(self.weights_layer_3, self.activationThree).reshape([self.output, 1])
-        print(self.stateLayerFour.T)
+        #print(self.stateLayerFour.T)
+        if self.apply_softmax:
+            vec = softmax(self.stateLayerFour.T)
+            return vec.index(max(vector))
         return list(self.stateLayerFour).index(np.amax(self.stateLayerFour))
 
     def forward(self, input):
@@ -59,6 +61,9 @@ class Neural():
         self.activationTwo = self.sigmoid(np.dot(self.weights_layer_1, self.input_layer)).reshape([self.layerTwo, 1])
         self.activationThree = self.sigmoid(np.dot(self.weights_layer_2, self.activationTwo)).reshape([self.layerThree, 1])
         self.stateLayerFour = np.dot(self.weights_layer_3, self.activationThree).reshape([self.output, 1])
+        if(self.apply_softmax):
+            vec = softmax(self.stateLayerFour.T)
+            return vec
         return list(self.stateLayerFour)
 
     def init_weights(self, layerOneNeurons, layerTwoNeurons, layerThreeNeurons, outputNeurons): #randomly initialize the weights of the neural network.
