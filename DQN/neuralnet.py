@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import math
 
 class Neural():
 
@@ -20,6 +21,9 @@ class Neural():
         self.output = 0
 
         self.alpha = 1
+        self.temp = 1
+
+        self.apply_softmax = False
 
     def sigmoid(self, x):
         return 1/(1+np.exp(-x))
@@ -34,11 +38,20 @@ class Neural():
     def d_relu(self, x):
         return 1 * (x>0)
 
+    def softmax(array):
+        sum = 0
+        for i in array:
+            sum += math.exp(i/self.temp)
+        for i in array:
+            i = (math.exp(i/self.temp))/sum
+        return array
+
     def process(self, input):
         self.input_layer = np.array(input).reshape([self.layerOne, 1])
         self.activationTwo = self.sigmoid(np.dot(self.weights_layer_1, self.input_layer)).reshape([self.layerTwo, 1])
         self.activationThree = self.sigmoid(np.dot(self.weights_layer_2, self.activationTwo)).reshape([self.layerThree, 1])
         self.stateLayerFour = np.dot(self.weights_layer_3, self.activationThree).reshape([self.output, 1])
+        print(self.stateLayerFour.T)
         return list(self.stateLayerFour).index(np.amax(self.stateLayerFour))
 
     def forward(self, input):
