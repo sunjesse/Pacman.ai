@@ -21,9 +21,9 @@ class Neural():
         self.output = 0
 
         self.alpha = 1
-        self.temp = 1
+        self.temp = 0.5
 
-        self.apply_softmax = False
+        self.apply_softmax = True
 
     def sigmoid(self, x):
         return 1/(1+np.exp(-x))
@@ -38,11 +38,12 @@ class Neural():
     def d_relu(self, x):
         return 1 * (x>0)
 
-    def softmax(array):
+    def softmax(self, array):
         sum = 0
-        for i in array:
+        x = [i for i in array[0]]
+        for i in x:
             sum += math.exp(i/self.temp)
-        soft = [i/sum for i in array]
+        soft = [i/sum for i in x]
         return soft
 
     def process(self, input):
@@ -51,9 +52,11 @@ class Neural():
         self.activationThree = self.sigmoid(np.dot(self.weights_layer_2, self.activationTwo)).reshape([self.layerThree, 1])
         self.stateLayerFour = np.dot(self.weights_layer_3, self.activationThree).reshape([self.output, 1])
         #print(self.stateLayerFour.T)
-        if self.apply_softmax:
-            vec = softmax(self.stateLayerFour.T)
-            return vec.index(max(vector))
+        #if self.apply_softmax:
+            #print(self.stateLayerFour.T)
+            #vec = self.softmax(self.stateLayerFour.T)
+            #print(vec)
+            #return vec.index(max(vec))
         return list(self.stateLayerFour).index(np.amax(self.stateLayerFour))
 
     def forward(self, input):
@@ -61,9 +64,9 @@ class Neural():
         self.activationTwo = self.sigmoid(np.dot(self.weights_layer_1, self.input_layer)).reshape([self.layerTwo, 1])
         self.activationThree = self.sigmoid(np.dot(self.weights_layer_2, self.activationTwo)).reshape([self.layerThree, 1])
         self.stateLayerFour = np.dot(self.weights_layer_3, self.activationThree).reshape([self.output, 1])
-        if(self.apply_softmax):
-            vec = softmax(self.stateLayerFour.T)
-            return vec
+        #if self.apply_softmax:
+            #vec = self.softmax(self.stateLayerFour.T)
+            #return vec
         return list(self.stateLayerFour)
 
     def init_weights(self, layerOneNeurons, layerTwoNeurons, layerThreeNeurons, outputNeurons): #randomly initialize the weights of the neural network.
@@ -98,6 +101,7 @@ class Neural():
         #return (1/self.output)*np.sum(np.multiply(y-target_out, y-target_out))
 
     def backpropagate(self, target_out, y):
+        '''Apply softmax here??'''
         delta_four = (np.array(y)-np.array(target_out)) * self.d_sigmoid(self.stateLayerFour).reshape([self.output, 1]) #self.stateLayerFour == np.dot(self.weights_layer_3, self.activationThree)
         delta_three = np.multiply(np.dot(self.weights_layer_3.T, delta_four), self.d_sigmoid(self.activationThree)).reshape([self.layerThree, 1])
         delta_two = np.multiply(np.dot(self.weights_layer_2.T, delta_three), self.d_sigmoid(self.activationTwo)).reshape([self.layerTwo, 1])

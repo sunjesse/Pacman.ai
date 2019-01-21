@@ -13,7 +13,7 @@ TO DO:
 '''
 
 ''' ---- Training ---- '''
-replay_buffer_size = 99
+replay_buffer_size = 2
 epislon = 1
 sample_epsilon = 0.8
 gamma = 0.9
@@ -40,7 +40,7 @@ while(training):
             print("Sucessfully saved objects and lists in objects.db.")
             if shelf["first_time"]:
                 shelf["first_time"] = False
-                print(shelf["first_time"])
+
         finally:
             shelf.close()
 

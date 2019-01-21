@@ -185,16 +185,19 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
 
         if constants.randoming == False:
             random_movement_epsilon = random.uniform(0, 1)
-
-            if random_movement_epsilon < 0.1:
+            if random_movement_epsilon < 0.01:
+                constants.randoming = True
                 action = random.randint(0, 3)
                 constants.movement = action
+                constants.max_movement_t = random.randint(15, 45)
             else:
-                action = q_net.process(inputVector)
+                action = q_net.process(inputVector) # Run a forward pass on the target network to get q value.
         else:
             action = constants.movement
             constants.random_movement_t += 1
-            if(constants.random_movement_t % 60):
+            print(constants.random_movement_t)
+            if(constants.random_movement_t % constants.max_movement_t == 0):
+                constants.random_movement_t = 0
                 constants.randoming = False
 
         #Adding state on time step "t+1" into the transition at time step t
@@ -243,8 +246,8 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
         blinky.futureMovementNumber = []
 
         constants.t += 1 #increment a time-step
-        #Sample from replay buffer every 100 timesteps
-        if constants.t % 100 == 0:
+        #Sample from replay buffer every 60 timesteps
+        if constants.t % 60 == 0:
             if random.randint(0, 100) < 60: #sample from first replay buffer
                 if rb.count >= replay_buffer_size:
                     print("Sampling from replay buffer one.")

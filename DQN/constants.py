@@ -32,6 +32,7 @@ randoming = False
 movement = -1
 random_movement_t = 0
 closest_food = -1
+max_movement_t = 0
 
 shelf = shelve.open("objects")
 
