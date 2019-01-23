@@ -41,8 +41,8 @@ class Neural():
     def softmax(self, array):
         sum = 0
         for i in array[0]:
-            sum += math.exp(i/self.temp) #SHOULD BE self.temp
-        soft = [math.exp(i/self.temp)/sum for i in array[0]] #SAME THING AS ABOVE. 1.0 SHOULD BE A VARIABLE INSTEAD, BUT USING SAVED NETWORKS SO IT IS STILl 0.5??
+            sum += math.exp(i/self.temp)
+        soft = [math.exp(i/self.temp)/sum for i in array[0]]
         return soft
 
     def process(self, input):
