@@ -50,14 +50,9 @@ class Neural():
         self.activationTwo = self.sigmoid(np.dot(self.weights_layer_1, self.input_layer)).reshape([self.layerTwo, 1])
         self.activationThree = self.sigmoid(np.dot(self.weights_layer_2, self.activationTwo)).reshape([self.layerThree, 1])
         self.stateLayerFour = np.dot(self.weights_layer_3, self.activationThree).reshape([self.output, 1])
-        #print(self.stateLayerFour.T)
-        #if self.apply_softmax:
-            #print(self.stateLayerFour.T)
-            #vec = self.softmax(self.stateLayerFour.T)
-            #print(vec)
-            #return vec.index(max(vec))
-        #print(self.stateLayerFour.T)
-        print(self.softmax(self.stateLayerFour.T))
+        #print(self.softmax(self.stateLayerFour.T))
+        if self.apply_softmax:
+            return self.softmax(self.stateLayerFour.T)
         return list(self.stateLayerFour).index(np.amax(self.stateLayerFour))
 
     def forward(self, input):
@@ -65,10 +60,7 @@ class Neural():
         self.activationTwo = self.sigmoid(np.dot(self.weights_layer_1, self.input_layer)).reshape([self.layerTwo, 1])
         self.activationThree = self.sigmoid(np.dot(self.weights_layer_2, self.activationTwo)).reshape([self.layerThree, 1])
         self.stateLayerFour = np.dot(self.weights_layer_3, self.activationThree).reshape([self.output, 1])
-        #if self.apply_softmax:
-            #vec = self.softmax(self.stateLayerFour.T)
-            #return vec
-        return list(self.stateLayerFour)
+        return list(self.stateLayerFour.T)
 
     def init_weights(self, layerOneNeurons, layerTwoNeurons, layerThreeNeurons, outputNeurons): #randomly initialize the weights of the neural network.
         self.layerOne = layerOneNeurons

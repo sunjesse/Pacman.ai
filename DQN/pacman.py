@@ -16,7 +16,7 @@ import dynamicPositions
 import random
 import featureExtraction
 import replay_buffer as rb
-
+import numpy as np
 
 pygame.init()
 pygame.font.init()
@@ -185,14 +185,20 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
         #print(inputVector)
         if constants.randoming == False:
             random_movement_epsilon = random.uniform(0, 1)
-            if random_movement_epsilon < 0.01:
+            if random_movement_epsilon < 0:
                 constants.randoming = True
                 action = random.randint(0, 3)
                 constants.movement = action
-                constants.max_movement_t = random.randint(15, 45)
+                constants.max_movement_t = int(np.random.normal(32, 10))
                 print("Randoming with movement time: " + str(constants.max_movement_t))
+
             else:
-                action = q_net.process(inputVector) # Run a forward pass on the target network to get q value.
+                if constants.target_network.apply_softmax:
+                    probability = constants.target_network.process(inputVector)
+                    action = np.random.choice(np.array([0,1,2,3]), p=probability) # Sample from softmax probability distribution.
+                    print(probability)
+                else:
+                    action = constants.target_network.process(inputVector)
         else:
             action = constants.movement
             constants.random_movement_t += 1
@@ -246,8 +252,8 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
         blinky.futureMovementNumber = []
 
         constants.t += 1 #increment a time-step
-        #Sample from replay buffer every 60 timesteps
-        if constants.t % 60 == 0:
+        #Sample from replay buffer every 20 timesteps
+        if constants.t % 20 == 0:
             if random.randint(0, 100) < 60: #sample from first replay buffer
                 if rb.count >= replay_buffer_size:
                     print("Sampling from replay buffer one.")
@@ -261,6 +267,7 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
                     q_t_plus_1 = constants.target_network.forward(rb.replay_buffer[i][3])
                     t_index = list(q_t_plus_1).index(max(q_t_plus_1))
                     q_value_target = rb.replay_buffer[i][2] + gamma*max(q_t_plus_1)
+                    print(q_value_target - max(q_t))
                     for x in range(4):
                         if x == t_index:
                             q_t_plus_1[x] = q_value_target
@@ -274,17 +281,16 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
             else: #sample from second replay buffer
                 if rb.count_two >= replay_buffer_size:
                     print("Sampling from replay buffer two.")
-                #if time_step % 50 == 0:
                     e = random.uniform(0, 1)
                     i = 0
                     if e > sample_epsilon: #sample stochastically rather than greedily.
                         i = random.randint(0, replay_buffer_size-1)
                     #calculate target q(s,a)
-                    q_t = constants.target_network.forward(rb.replay_buffer_two[i][0])
+                    q_t = constants.q_network.forward(rb.replay_buffer_two[i][0])
                     q_t_plus_1 = constants.target_network.forward(rb.replay_buffer_two[i][3])
-                    print(q_t_plus_1)
                     t_index = list(q_t_plus_1).index(max(q_t_plus_1))
                     q_value_target = rb.replay_buffer_two[i][2] + gamma*max(q_t_plus_1)
+                    print(q_value_target - max(q_t))
                     for x in range(4):
                         if x == t_index:
                             q_t_plus_1[x] = q_value_target
@@ -302,14 +308,3 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
 
         pygame.display.update()
         clock.tick(60)
-'''
-game(gameOver, constants.target_network, 0.9, 0.8, 1000)
-while gameOver == True:
-    gameOver = False
-    reset()
-    print("restart")
-    game(gameOver, constants.target_network, 0.9, 0.8, 1000)
-
-pygame.quit()
-quit()
-'''

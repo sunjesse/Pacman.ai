@@ -21,7 +21,8 @@ gameOver = False
 training = True
 outer_time_step = 0
 constants.target_network.temp = 2
-
+constants.target_network.apply_softmax = True
+constants.q_network.apply_softmax = True
 while(training):
     try:
         pacman.game(gameOver, constants.target_network, gamma, sample_epsilon, replay_buffer_size) #calculate TD error and put in a parallel deque.
