@@ -182,7 +182,7 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
         distance_between = featureExtraction.distance_between((pacmanMain.rect.x, pacmanMain.rect.y), (blinky.rect.x, blinky.rect.y))
 
         inputVector = featureExtraction.extract(food_pos, enemy_pos, wall_pos, food_pos_2, enemy_pos_2, constants.closest_food, distance_between, constants.frightenMode)
-
+        #print(inputVector)
         if constants.randoming == False:
             random_movement_epsilon = random.uniform(0, 1)
             if random_movement_epsilon < 0.01:
@@ -190,12 +190,12 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
                 action = random.randint(0, 3)
                 constants.movement = action
                 constants.max_movement_t = random.randint(15, 45)
+                print("Randoming with movement time: " + str(constants.max_movement_t))
             else:
                 action = q_net.process(inputVector) # Run a forward pass on the target network to get q value.
         else:
             action = constants.movement
             constants.random_movement_t += 1
-            print(constants.random_movement_t)
             if(constants.random_movement_t % constants.max_movement_t == 0):
                 constants.random_movement_t = 0
                 constants.randoming = False
@@ -257,7 +257,7 @@ def game(game_state, q_net, gamma, sample_epsilon, replay_buffer_size):
                     if e > sample_epsilon: #sample stochastically rather than greedily.
                         i = random.randint(0, replay_buffer_size-1)
                     #calculate target q(s,a)
-                    q_t = constants.target_network.forward(rb.replay_buffer[i][0])
+                    q_t = constants.q_network.forward(rb.replay_buffer[i][0])
                     q_t_plus_1 = constants.target_network.forward(rb.replay_buffer[i][3])
                     t_index = list(q_t_plus_1).index(max(q_t_plus_1))
                     q_value_target = rb.replay_buffer[i][2] + gamma*max(q_t_plus_1)

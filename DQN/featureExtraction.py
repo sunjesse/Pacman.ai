@@ -152,8 +152,8 @@ def extract(food_pos, enemy_pos, wall_pos, food_pos_2, enemy_pos_2, food_closest
 
     if(food_closests == None):
         food_closests = -1
-    input_vector.append(food_closests/10) #normalized this feature by dividng by 10.
-    input_vector.append(distance_between[0]/constants.display_width)
-    input_vector.append(distance_between[1]/constants.display_height)
+    input_vector.append(food_closests) #normalized this feature by dividng by 5.
+    input_vector.append(distance_between[0]/100)
+    input_vector.append(distance_between[1]/100)
 
     return input_vector

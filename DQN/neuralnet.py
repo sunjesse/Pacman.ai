@@ -21,7 +21,7 @@ class Neural():
         self.output = 0
 
         self.alpha = 1
-        self.temp = 0.5
+        self.temp = 1.0
 
         self.apply_softmax = True
 
@@ -40,10 +40,9 @@ class Neural():
 
     def softmax(self, array):
         sum = 0
-        x = [i for i in array[0]]
-        for i in x:
-            sum += math.exp(i/self.temp)
-        soft = [i/sum for i in x]
+        for i in array[0]:
+            sum += math.exp(i/self.temp) #SHOULD BE self.temp
+        soft = [math.exp(i/self.temp)/sum for i in array[0]] #SAME THING AS ABOVE. 1.0 SHOULD BE A VARIABLE INSTEAD, BUT USING SAVED NETWORKS SO IT IS STILl 0.5??
         return soft
 
     def process(self, input):
@@ -57,6 +56,8 @@ class Neural():
             #vec = self.softmax(self.stateLayerFour.T)
             #print(vec)
             #return vec.index(max(vec))
+        #print(self.stateLayerFour.T)
+        print(self.softmax(self.stateLayerFour.T))
         return list(self.stateLayerFour).index(np.amax(self.stateLayerFour))
 
     def forward(self, input):

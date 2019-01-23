@@ -13,13 +13,14 @@ TO DO:
 '''
 
 ''' ---- Training ---- '''
-replay_buffer_size = 2
+replay_buffer_size = 999
 epislon = 1
 sample_epsilon = 0.8
-gamma = 0.9
+gamma = 0.99
 gameOver = False
 training = True
 outer_time_step = 0
+constants.target_network.temp = 2
 
 while(training):
     try:
