@@ -60,7 +60,7 @@ class Neural():
         self.activationTwo = self.sigmoid(np.dot(self.weights_layer_1, self.input_layer)).reshape([self.layerTwo, 1])
         self.activationThree = self.sigmoid(np.dot(self.weights_layer_2, self.activationTwo)).reshape([self.layerThree, 1])
         self.stateLayerFour = np.dot(self.weights_layer_3, self.activationThree).reshape([self.output, 1])
-        return list(self.stateLayerFour.T)
+        return list(self.stateLayerFour)
 
     def init_weights(self, layerOneNeurons, layerTwoNeurons, layerThreeNeurons, outputNeurons): #randomly initialize the weights of the neural network.
         self.layerOne = layerOneNeurons
