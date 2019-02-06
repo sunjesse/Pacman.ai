@@ -7,21 +7,16 @@ import shelve
 import replay_buffer as rb
 import csv
 
-'''
-TO DO:
-1. Maybe implement DeepMind's implementation of PER.
-'''
-
 ''' ---- Training ---- '''
-replay_buffer_size = 999
+replay_buffer_size = 999 #1000 effectively.
 epislon = 1
 sample_epsilon = 0.8
 gamma = 0.99
 gameOver = False
 training = True
 
-constants.target_network.temp = 6
-constants.q_network.temp = 6
+constants.target_network.temp = 10
+constants.q_network.temp = 10
 constants.target_network.apply_softmax = True
 constants.q_network.apply_softmax = True
 

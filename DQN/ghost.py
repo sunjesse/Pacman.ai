@@ -44,7 +44,7 @@ class Ghost(pygame.sprite.Sprite):
         self.face_left = False
         self.face_right = True
 
-        self.speed = 0.00555*constants.display_height
+        self.speed = 0.01*constants.display_height#0.00555*constants.display_height
 
         #intersection decision making
         self.tileToMove = []
