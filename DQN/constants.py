@@ -17,7 +17,6 @@ white = (255, 255, 255)
 
 #scores
 score = 0
-scores = []
 
 frightenMode = False
 chaseMode = True
@@ -39,6 +38,7 @@ shelf = shelve.open("objects")
 if shelf["first_time"]:
     q_network = Neural()
     q_network.init_weights(31, 23, 23, 4)
+    scores = []
     target_network = q_network
     print("Successfully initiated networks.")
     shelf.close()
@@ -47,6 +47,7 @@ else:
     try:
         q_network = shelf["q_network"]
         target_network = shelf["target_network"]
+        scores = shelf["scores"]
         print("Successfully restored networks.")
     finally:
         shelf.close()
