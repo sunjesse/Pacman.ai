@@ -20,7 +20,7 @@ class Neural():
         self.layerThree = 0
         self.output = 0
 
-        self.alpha = 1
+        self.alpha = 0.01
         self.temp = 1.0
 
         self.apply_softmax = True
@@ -40,17 +40,23 @@ class Neural():
 
     def softmax(self, array):
         sum = 0
+        #print(array[0])
         for i in array[0]:
-            sum += math.exp(i/self.temp)
+            try:
+                sum += math.exp(i/self.temp)
+            except OverflowError:
+                sum += float('inf')
         soft = [math.exp(i/self.temp)/sum for i in array[0]]
+        print(soft)
         return soft
 
     def process(self, input):
         self.input_layer = np.array(input).reshape([self.layerOne, 1])
-        self.activationTwo = self.sigmoid(np.dot(self.weights_layer_1, self.input_layer)).reshape([self.layerTwo, 1])
+        self.activationTwo = self.sigmoid(np.dot(self.weights_layer_1, self.input_layer))#.reshape([self.layerTwo, 1])
         self.activationThree = self.sigmoid(np.dot(self.weights_layer_2, self.activationTwo)).reshape([self.layerThree, 1])
         self.stateLayerFour = np.dot(self.weights_layer_3, self.activationThree).reshape([self.output, 1])
-        #print(self.softmax(self.stateLayerFour.T))
+        #print(self.stateLayerFour)
+
         if self.apply_softmax:
             return self.softmax(self.stateLayerFour.T)
         return list(self.stateLayerFour).index(np.amax(self.stateLayerFour))
@@ -94,14 +100,16 @@ class Neural():
         #return (1/self.output)*np.sum(np.multiply(y-target_out, y-target_out))
 
     def backpropagate(self, target_out, y):
-        '''Apply softmax here??'''
         delta_four = (np.array(y)-np.array(target_out)) * self.d_sigmoid(self.stateLayerFour).reshape([self.output, 1]) #self.stateLayerFour == np.dot(self.weights_layer_3, self.activationThree)
+        print(np.array(y) - np.array(target_out))
         delta_three = np.multiply(np.dot(self.weights_layer_3.T, delta_four), self.d_sigmoid(self.activationThree)).reshape([self.layerThree, 1])
         delta_two = np.multiply(np.dot(self.weights_layer_2.T, delta_three), self.d_sigmoid(self.activationTwo)).reshape([self.layerTwo, 1])
-
+        #print(self.alpha*np.dot(np.array(self.input_layer), delta_two.T).T)
+        m = self.alpha*np.dot(self.activationThree, delta_four.T).T
         self.weights_layer_1 -= self.alpha*np.dot(np.array(self.input_layer), delta_two.T).T
         self.weights_layer_2 -= self.alpha*np.dot(self.activationTwo, delta_three.T).T
-        self.weights_layer_3 -= self.alpha*np.dot(self.activationThree, delta_four.T).T
+        self.weights_layer_3 -= m
+        print(m)
         print("Updated weights.")
-        #delta_four = (np.array(y) - np.array(target_out)) * self.d_relu(self.target_out)
+        #delta_four = (np.array(y) - np.array(target_out)) * self.d_sigmoid(self.target_out)
         #delta_three = np.dot(self.a)

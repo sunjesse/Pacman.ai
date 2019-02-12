@@ -17,6 +17,7 @@ white = (255, 255, 255)
 
 #scores
 score = 0
+to_save = False
 
 frightenMode = False
 chaseMode = True
